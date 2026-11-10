@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# PLANTED P-13: only X-Robots-Tag is sent; no CSP, HSTS, X-Content-Type-Options or Referrer-Policy.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
