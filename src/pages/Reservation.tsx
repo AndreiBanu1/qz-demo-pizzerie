@@ -95,7 +95,7 @@ export default function Reservation() {
           </form>
         )}
 
-        <aside aria-labelledby="suna-titlu" className="space-y-8 lg:w-72">
+        <section aria-labelledby="suna-titlu" className="space-y-8 lg:w-72">
           <div>
             <h2 id="suna-titlu" className="text-2xl">
               Preferi să suni?
@@ -109,7 +109,7 @@ export default function Reservation() {
               <HoursTable />
             </div>
           </div>
-        </aside>
+        </section>
       </div>
     </div>
   );

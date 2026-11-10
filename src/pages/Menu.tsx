@@ -26,7 +26,7 @@ export default function Menu() {
           </ul>
         </section>
       ))}
-      <aside aria-labelledby="comanda-titlu" className="mt-12 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-ink/5">
+      <section aria-labelledby="comanda-titlu" className="mt-12 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-ink/5">
         <h2 id="comanda-titlu" className="text-2xl">
           Ți-e deja foame?
         </h2>
@@ -40,7 +40,7 @@ export default function Menu() {
             Rezervă o masă
           </Link>
         </div>
-      </aside>
+      </section>
     </div>
   );
 }
