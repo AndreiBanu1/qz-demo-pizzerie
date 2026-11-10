@@ -1,0 +1,107 @@
+[
+  {
+    "id": "P-01",
+    "area": "speed",
+    "issue": "Hero and menu photos are ~4000 px JPEGs (several MB each), with no width/height and no lazy loading. Known when committed: hero image has no width/height; menu thumbnails are sized by CSS (h-24 w-24) but are multi-MB originals with no lazy loading",
+    "where": ["src/components/MenuItem.tsx", "src/pages/Home.tsx"],
+    "expectedDetector": "Lighthouse: LCP, total byte weight, image audits, CLS"
+  },
+  {
+    "id": "P-02",
+    "area": "speed",
+    "issue": "Google Fonts loaded with every weight, blocking the first render",
+    "where": ["index.html"],
+    "expectedDetector": "Lighthouse render-blocking resources"
+  },
+  {
+    "id": "P-03",
+    "area": "accessibility",
+    "issue": "Menu photos and the logo have no alt",
+    "where": ["src/components/CatLogo.tsx", "src/components/MenuItem.tsx", "src/pages/Home.tsx"],
+    "expectedDetector": "axe image-alt, Lighthouse"
+  },
+  {
+    "id": "P-04",
+    "area": "accessibility",
+    "issue": "Prices in light grey on white",
+    "where": ["src/components/MenuItem.tsx"],
+    "expectedDetector": "axe color-contrast"
+  },
+  {
+    "id": "P-05",
+    "area": "accessibility",
+    "issue": "Form fields with a placeholder but no <label>",
+    "where": ["src/pages/Reservation.tsx"],
+    "expectedDetector": "Playwright getByLabel in reservation.spec (axe `label` likely passes: axe accepts a non-empty placeholder as the accessible name)"
+  },
+  {
+    "id": "P-06",
+    "area": "accessibility",
+    "issue": "\"Sună acum\" is a div with onclick, not a link, so it can't be reached by keyboard",
+    "where": ["src/components/CallButton.tsx"],
+    "expectedDetector": "Playwright keyboard test (axe usually misses this)"
+  },
+  {
+    "id": "P-07",
+    "area": "qa",
+    "issue": "The reservation form is fixed at 600 px wide, so it scrolls sideways and the submit button is off screen on a phone. Inputs under 16 px make iOS zoom. The date field wants MM/DD/YYYY, and the phone field rejects spaces and +40",
+    "where": ["src/pages/Reservation.tsx"],
+    "expectedDetector": "Playwright on iPhone 15 and Pixel 7, sideways-scroll check"
+  },
+  {
+    "id": "P-08",
+    "area": "qa",
+    "issue": "\"Deschis acum\" is calculated in UTC rather than Bucharest time, so it's wrong for 2-3 hours a day",
+    "where": ["src/components/OpeningStatus.tsx"],
+    "expectedDetector": "Playwright with a fixed clock and timezoneId"
+  },
+  {
+    "id": "P-09",
+    "area": "seo",
+    "issue": "Every page has the title \"Home\" and no meta description",
+    "where": ["index.html"],
+    "expectedDetector": "Lighthouse SEO, our own HTML check"
+  },
+  {
+    "id": "P-10",
+    "area": "seo",
+    "issue": "Client-rendered only: the raw HTML is an empty #root, with no H1 or text",
+    "where": ["src/main.tsx"],
+    "expectedDetector": "Our own no-JS HTML check"
+  },
+  {
+    "id": "P-11",
+    "area": "seo",
+    "issue": "No structured data",
+    "where": ["index.html"],
+    "expectedDetector": "Our own JSON-LD check, Schema.org validator"
+  },
+  {
+    "id": "P-12",
+    "area": "seo",
+    "issue": "<html lang=\"en\"> on Romanian content",
+    "where": ["index.html"],
+    "expectedDetector": "Our own HTML check"
+  },
+  {
+    "id": "P-13",
+    "area": "security",
+    "issue": "No CSP, frame-ancestors/X-Frame-Options, X-Content-Type-Options, Referrer-Policy or Permissions-Policy",
+    "where": ["netlify.toml"],
+    "expectedDetector": "Mozilla HTTP Observatory, our own header check"
+  },
+  {
+    "id": "P-14",
+    "area": "security",
+    "issue": "Source maps published in production",
+    "where": ["vite.config.ts"],
+    "expectedDetector": "Our own check for reachable .map files"
+  },
+  {
+    "id": "P-15",
+    "area": "qa",
+    "issue": "The footer link \"Meniu\" points to /menu, which returns 404",
+    "where": ["src/components/Footer.tsx"],
+    "expectedDetector": "linkinator"
+  }
+]
