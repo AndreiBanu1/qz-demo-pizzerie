@@ -12,8 +12,8 @@ function git(args) {
 
 export function versionInfo(env, now = () => new Date().toISOString()) {
   return {
-    commit: env.COMMIT_REF || git("rev-parse HEAD"),
-    branch: env.BRANCH || git("rev-parse --abbrev-ref HEAD"),
+    commit: env.CF_PAGES_COMMIT_SHA || env.COMMIT_REF || git("rev-parse HEAD"),
+    branch: env.CF_PAGES_BRANCH || env.BRANCH || git("rev-parse --abbrev-ref HEAD"),
     builtAt: now(),
   };
 }

@@ -6,6 +6,13 @@ This branch is the deliberately weak "before" build. It contains planted issues,
 
 Pizza Mița is not a real business. The address, phone number and hours are placeholders.
 
+## Hosting
+
+Both builds are hosted on Cloudflare Pages:
+
+- `https://pizza-mita-inainte.pages.dev` is this weak build
+- `https://pizza-mita.pages.dev` is the fixed build
+
 ## Commands
 
 - `npm run dev` starts the dev server

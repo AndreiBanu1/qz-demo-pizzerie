@@ -86,8 +86,8 @@
   {
     "id": "P-13",
     "area": "security",
-    "issue": "No CSP, frame-ancestors/X-Frame-Options, X-Content-Type-Options, Referrer-Policy or Permissions-Policy",
-    "where": ["netlify.toml"],
+    "issue": "Only X-Robots-Tag is configured: no Content-Security-Policy, no frame-ancestors/X-Frame-Options and no Permissions-Policy. Cloudflare Pages adds X-Content-Type-Options: nosniff, Referrer-Policy and Access-Control-Allow-Origin: * by default; those are measured, not planted.",
+    "where": ["public/_headers"],
     "expectedDetector": "Mozilla HTTP Observatory, our own header check"
   },
   {

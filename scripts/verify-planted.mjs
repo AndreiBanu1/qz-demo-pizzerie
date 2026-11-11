@@ -5,7 +5,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(fileURLToPath(import.meta.url), "..", "..");
-const SCAN = ["src", "index.html", "vite.config.ts", "netlify.toml"];
+const SCAN = ["src", "index.html", "vite.config.ts", "public/_headers"];
 const MARKER = /PLANTED (P-\d{2})\b/g;
 
 /** Maps each planted id to the paths whose text contains `PLANTED <id>`. */
