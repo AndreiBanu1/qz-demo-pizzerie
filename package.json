@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/write-version.mjs",
     "preview": "vite preview",
     "test": "vitest run",
+    "audit": "node audit/run.mjs",
     "verify:planted": "node scripts/verify-planted.mjs"
   },
   "dependencies": {
