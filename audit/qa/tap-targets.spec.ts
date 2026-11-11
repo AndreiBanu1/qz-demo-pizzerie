@@ -7,7 +7,7 @@ for (const { id, path } of auditedPages) {
     const tooSmall = await page.evaluate(() => {
       const MIN = 24;
       const small: string[] = [];
-      for (const el of document.querySelectorAll<HTMLElement>("a, button, input")) {
+      for (const el of document.querySelectorAll<HTMLElement>("a, button, input, select, textarea")) {
         if (el instanceof HTMLInputElement && el.type === "hidden") continue;
         const style = getComputedStyle(el);
         const box = el.getBoundingClientRect();

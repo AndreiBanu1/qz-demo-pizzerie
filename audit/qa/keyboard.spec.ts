@@ -1,4 +1,4 @@
-import { expect, open, test } from "./helpers";
+import { expect, focusIsVisible, open, test } from "./helpers";
 
 type Focused = { tag: string; text: string; href: string | null; type: string | null; visibleFocus: boolean };
 
@@ -11,18 +11,18 @@ async function tabThrough(page: import("@playwright/test").Page, max: number): P
     const f = await page.evaluate(() => {
       const el = document.activeElement as HTMLElement | null;
       if (!el || el === document.body) return null;
-      const s = getComputedStyle(el);
-      const outline = s.outlineStyle !== "none" && parseFloat(s.outlineWidth) > 0;
-      const shadow = s.boxShadow !== "" && s.boxShadow !== "none";
       return {
         tag: el.tagName.toLowerCase(),
         text: (el.textContent ?? "").trim().slice(0, 40),
         href: el.getAttribute("href"),
         type: el.getAttribute("type"),
-        visibleFocus: outline || shadow,
+        visibleFocus: false,
       };
     });
-    if (f) seen.push(f);
+    if (f) {
+      f.visibleFocus = await focusIsVisible(page);
+      seen.push(f);
+    }
   }
   return seen;
 }
@@ -39,4 +39,18 @@ test("Tab reaches the submit button on the reservation page, with a visible focu
   const seen = await tabThrough(page, 30);
   expect(seen.some((f) => f.tag === "button" && f.type === "submit"), "submit button reached").toBe(true);
   for (const f of seen) expect(f.visibleFocus, `focus ring on ${f.tag} "${f.text}"`).toBe(true);
+});
+
+test("the focus check tells a real focus ring from a resting shadow", async ({ page }) => {
+  await page.setContent(`
+    <style>
+      button { box-shadow: 0 3px 0 #7a2410; }
+      #fake:focus { outline: 2px solid transparent; }
+      #real:focus { outline: 3px solid #1a56db; }
+    </style>
+    <button id="fake">fake</button><button id="real">real</button>`);
+  await page.locator("#fake").focus();
+  expect(await focusIsVisible(page), "resting shadow + transparent outline").toBe(false);
+  await page.locator("#real").focus();
+  expect(await focusIsVisible(page), "real outline").toBe(true);
 });

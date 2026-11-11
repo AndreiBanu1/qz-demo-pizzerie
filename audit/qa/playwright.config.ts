@@ -17,6 +17,7 @@ export default defineConfig({
   reporter: [["list"], ["json", { outputFile: join(runDir, "playwright.json") }]],
   use: {
     baseURL,
+    actionTimeout: 10_000,
     screenshot: "only-on-failure",
     locale: "ro-RO",
   },
