@@ -1,0 +1,3 @@
+# PLANTED P-13: only X-Robots-Tag is configured; no CSP, no frame-ancestors/X-Frame-Options and no Permissions-Policy.
+/*
+  X-Robots-Tag: noindex
