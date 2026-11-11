@@ -46,3 +46,10 @@ describe("observatory host guard", () => {
     expect(called).toBe(false);
   });
 });
+
+describe("npm-audit commit validation", () => {
+  it("rejects an option-like commit before any git call", async () => {
+    const { run } = await import("./npm-audit.mjs");
+    await expect(run({ dir: "/tmp/x", meta: { version: { commit: "--output=x" } } })).rejects.toThrow(/invalid commit/);
+  });
+});

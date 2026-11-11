@@ -23,6 +23,7 @@ export async function run({ url, pages, dir }) {
   const out = {};
   for (const page of pages) {
     const res = await fetch(new URL(page.path, url));
+    if (!res.ok) throw new Error(`headers: ${page.id} returned HTTP ${res.status}`);
     out[page.id] = headerReport(res.headers);
   }
   writeRaw(dir, "headers", out);

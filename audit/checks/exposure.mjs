@@ -19,12 +19,15 @@ export function isExposed({ path, status, body }) {
 
 export async function run({ url, dir, delayMs = 1000 }) {
   const home = await fetch(new URL("/", url));
+  if (!home.ok) throw new Error(`exposure: home page returned HTTP ${home.status}`);
   const html = await home.text();
+  const origin = new URL(url).origin;
   const scripts = parse(html)
     .querySelectorAll("script[src]")
     .map((s) => new URL(s.getAttribute("src"), new URL("/", url)))
-    .filter((u) => u.pathname.endsWith(".js"));
-  const paths = [...scripts.map((u) => `${u.pathname}.map`), "/.git/config", "/.env"];
+    .filter((u) => u.origin === origin && u.pathname.endsWith(".js"));
+  const maps = [...new Set(scripts.map((u) => `${u.pathname}.map`))];
+  const paths = [...maps, "/.git/config", "/.env"];
   const out = [];
   for (const [i, path] of paths.entries()) {
     if (i > 0) await sleep(delayMs);
