@@ -2,7 +2,7 @@
   {
     "id": "P-01",
     "area": "speed",
-    "issue": "Hero and menu photos are ~4000 px JPEGs (several MB each), with no width/height and no lazy loading. Known when committed: hero image has no width/height; menu thumbnails are sized by CSS (h-24 w-24) but are multi-MB originals with no lazy loading",
+    "issue": "Hero and menu photos are ~4000 px JPEGs (several MB each) with no lazy loading. The hero has no width/height; menu thumbnails are sized by CSS but still download the full original.",
     "where": ["src/components/MenuItem.tsx", "src/pages/Home.tsx"],
     "expectedDetector": "Lighthouse: LCP, total byte weight, image audits, CLS"
   },

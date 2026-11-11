@@ -20,4 +20,14 @@ describe("findMarkers", () => {
   it("has no entry for an id without a marker", () => {
     expect(findMarkers([{ path: "a.tsx", text: "nothing here" }]).has("P-05")).toBe(false);
   });
+
+  it("does not count PLANTED P-150 as P-15", () => {
+    expect(findMarkers([{ path: "a.tsx", text: "// PLANTED P-150" }]).has("P-15")).toBe(false);
+  });
+
+  it("counts only the id that follows a PLANTED token", () => {
+    const found = findMarkers([{ path: "a.tsx", text: "PLANTED P-01, P-03" }]);
+    expect(found.has("P-01")).toBe(true);
+    expect(found.has("P-03")).toBe(false);
+  });
 });

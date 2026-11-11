@@ -1,11 +1,12 @@
 // Checks that every id in audit/planted-issues.json has a `PLANTED P-xx` marker in the source.
+// Each id needs its own `PLANTED` token, so `PLANTED P-01, P-03` only counts P-01.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(fileURLToPath(import.meta.url), "..", "..");
 const SCAN = ["src", "index.html", "vite.config.ts", "netlify.toml"];
-const MARKER = /PLANTED (P-\d{2})/g;
+const MARKER = /PLANTED (P-\d{2})\b/g;
 
 /** Maps each planted id to the paths whose text contains `PLANTED <id>`. */
 export function findMarkers(files) {
