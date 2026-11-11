@@ -2,6 +2,7 @@ import { LinkChecker } from "linkinator";
 import { writeRaw } from "../lib/run-dir.mjs";
 
 /**
+ * Links to other hosts are skipped, not checked, so dead external links are not covered.
  * Crawls the site from "/" on the same host only. Status 0 means linkinator
  * could not connect; it is recorded as-is (summarize counts it as broken).
  */
@@ -11,6 +12,7 @@ export async function run({ url, dir }) {
   const result = await checker.check({
     path: new URL("/", url).href,
     recurse: true,
+    timeout: 10000,
     linksToSkip: async (link) => {
       try {
         return new URL(link).origin !== origin;

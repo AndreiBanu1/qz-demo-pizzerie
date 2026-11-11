@@ -15,11 +15,21 @@ function walk(node, types, fields) {
   if (!node || typeof node !== "object") return;
   const t = node["@type"];
   const list = Array.isArray(t) ? t : t ? [t] : [];
-  for (const x of list) types.push(String(x));
-  if (list.includes("Restaurant")) {
+  const names = list.map((x) => String(x).replace(/^https?:\/\/schema\.org\//, ""));
+  types.push(...names);
+  if (names.includes("Restaurant")) {
     for (const k of Object.keys(node)) if (k !== "@context" && k !== "@type") fields.add(k);
   }
   if (node["@graph"]) walk(node["@graph"], types, fields);
+}
+
+/** Text of every text node, so adjacent block elements with no whitespace still separate words. */
+function textNodes(node, out = []) {
+  for (const child of node.childNodes) {
+    if (child.nodeType === 3) out.push(child.text);
+    else textNodes(child, out);
+  }
+  return out;
 }
 
 /** Inspects raw (no-JS) HTML for the SEO signals the audit reports. */
@@ -39,7 +49,7 @@ export function inspectHtml(html) {
   let words = 0;
   if (body) {
     for (const el of body.querySelectorAll("script, style, noscript")) el.remove();
-    words = body.textContent.split(/\s+/).filter(Boolean).length;
+    words = textNodes(body).join(" ").split(/\s+/).filter(Boolean).length;
   }
   const title = root.querySelector("title");
   return {
@@ -61,7 +71,9 @@ export function restaurantFieldsMissing(fields) {
 export async function run({ url, pages, dir }) {
   const out = {};
   for (const page of pages) {
-    const res = await fetch(new URL(page.path, url));
+    const target = new URL(page.path, url);
+    const res = await fetch(target);
+    if (!res.ok) throw new Error(`seo-html: ${page.id} (${target.href}) returned HTTP ${res.status}`);
     out[page.id] = inspectHtml(await res.text());
   }
   writeRaw(dir, "seo-html", out);
