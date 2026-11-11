@@ -24,7 +24,7 @@ describe("inspectHtml", () => {
     const r = inspectHtml(fixture("good.html"));
     expect(r.lang).toBe("ro");
     expect(r.h1Count).toBe(1);
-    expect(r.canonical).toBe("https://pizza-mita.netlify.app/");
+    expect(r.canonical).toBe("https://pizza-mita.pages.dev/");
     expect(r.jsonLd.types).toContain("Restaurant");
     expect(restaurantFieldsMissing(r.jsonLd.fields)).toEqual([]);
     expect(r.words).toBeGreaterThan(5);
