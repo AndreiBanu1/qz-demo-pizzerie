@@ -18,6 +18,21 @@ const LIGHTHOUSE_RUNS = [1, 2, 3];
 const AXE_PROJECTS = ["iphone-15", "pixel-7", "desktop"];
 const ROOT_PAGE = auditedPages.find((p) => p.path === "/").id;
 
+/**
+ * R33: render-blocking time per run. Lighthouse 13 replaced the render-blocking-resources
+ * audit with render-blocking-insight, whose numericValue (unit "millisecond") is the
+ * estimated first-paint saving if nothing blocked rendering. "notApplicable" means
+ * Lighthouse reported nothing render-blocking, so it counts as 0. An absent or errored
+ * audit, or any other unit, yields undefined, so finite() throws for that file.
+ */
+function renderBlockingMs(lhr) {
+  const audit = lhr.audits?.["render-blocking-insight"];
+  if (!audit) return undefined;
+  if (audit.scoreDisplayMode === "notApplicable") return 0;
+  if (audit.numericUnit !== "millisecond") return undefined;
+  return audit.numericValue;
+}
+
 /** [summary field, getter, is a 0–1 category score]. */
 const LIGHTHOUSE_METRICS = [
   ["performance", (l) => l.categories?.performance?.score, true],
@@ -28,6 +43,7 @@ const LIGHTHOUSE_METRICS = [
   ["cls", (l) => l.audits?.["cumulative-layout-shift"]?.numericValue, false],
   ["tbtMs", (l) => l.audits?.["total-blocking-time"]?.numericValue, false],
   ["bytes", (l) => l.audits?.["total-byte-weight"]?.numericValue, false],
+  ["renderBlockingMs", renderBlockingMs, false],
 ];
 
 const gz = (name) => `${name}.json.gz`;

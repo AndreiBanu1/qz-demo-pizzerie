@@ -27,8 +27,14 @@ const meta = {
   machine: "Darwin arm64 Fixture CPU",
 };
 
-/** A minimal LHR: only the 4 categories and the 4 audits summarize reads. */
-const lhr = ({ perf, a11y, seo, bp, lcp, cls, tbt, bytes }) => ({
+/** render-blocking-insight as Lighthouse 13 writes it: a saving in ms, or "notApplicable" (R33). */
+const blocking = (ms) =>
+  ms === "n/a"
+    ? { scoreDisplayMode: "notApplicable", score: null }
+    : { scoreDisplayMode: "metricSavings", score: ms > 0 ? 0 : 1, numericValue: ms, numericUnit: "millisecond" };
+
+/** A minimal LHR: only the 4 categories and the 5 audits summarize reads. */
+const lhr = ({ perf, a11y, seo, bp, lcp, cls, tbt, bytes, rb }) => ({
   categories: {
     performance: { score: perf },
     accessibility: { score: a11y },
@@ -40,25 +46,28 @@ const lhr = ({ perf, a11y, seo, bp, lcp, cls, tbt, bytes }) => ({
     "cumulative-layout-shift": { numericValue: cls },
     "total-blocking-time": { numericValue: tbt },
     "total-byte-weight": { numericValue: bytes },
+    "render-blocking-insight": blocking(rb),
   },
 });
 
 // Three runs per page. acasa LCP is 3000 / 2500 / 4000, so the median is 3000.
+// Render-blocking: acasa 850 / 820 / 900 (median 850); meniu 0 / 0 / 120, a passing
+// insight (median 0); rezervare "notApplicable" in every run, read as 0.
 const lighthouse = {
   acasa: [
-    lhr({ perf: 0.42, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 3000, cls: 0.21, tbt: 410, bytes: 2400000 }),
-    lhr({ perf: 0.55, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 2500, cls: 0.18, tbt: 350, bytes: 2400100 }),
-    lhr({ perf: 0.48, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 4000, cls: 0.25, tbt: 520, bytes: 2399900 }),
+    lhr({ perf: 0.42, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 3000, cls: 0.21, tbt: 410, bytes: 2400000, rb: 850 }),
+    lhr({ perf: 0.55, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 2500, cls: 0.18, tbt: 350, bytes: 2400100, rb: 820 }),
+    lhr({ perf: 0.48, a11y: 0.81, seo: 0.67, bp: 0.74, lcp: 4000, cls: 0.25, tbt: 520, bytes: 2399900, rb: 900 }),
   ],
   meniu: [
-    lhr({ perf: 0.6, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2000, cls: 0.05, tbt: 200, bytes: 3100000 }),
-    lhr({ perf: 0.62, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2200, cls: 0.06, tbt: 210, bytes: 3100000 }),
-    lhr({ perf: 0.61, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2100, cls: 0.04, tbt: 190, bytes: 3100000 }),
+    lhr({ perf: 0.6, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2000, cls: 0.05, tbt: 200, bytes: 3100000, rb: 0 }),
+    lhr({ perf: 0.62, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2200, cls: 0.06, tbt: 210, bytes: 3100000, rb: 0 }),
+    lhr({ perf: 0.61, a11y: 0.79, seo: 0.7, bp: 0.78, lcp: 2100, cls: 0.04, tbt: 190, bytes: 3100000, rb: 120 }),
   ],
   rezervare: [
-    lhr({ perf: 0.7, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1800, cls: 0, tbt: 100, bytes: 900000 }),
-    lhr({ perf: 0.72, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1900, cls: 0, tbt: 110, bytes: 900000 }),
-    lhr({ perf: 0.71, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1700, cls: 0, tbt: 90, bytes: 900000 }),
+    lhr({ perf: 0.7, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1800, cls: 0, tbt: 100, bytes: 900000, rb: "n/a" }),
+    lhr({ perf: 0.72, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1900, cls: 0, tbt: 110, bytes: 900000, rb: "n/a" }),
+    lhr({ perf: 0.71, a11y: 0.75, seo: 0.67, bp: 0.74, lcp: 1700, cls: 0, tbt: 90, bytes: 900000, rb: "n/a" }),
   ],
 };
 

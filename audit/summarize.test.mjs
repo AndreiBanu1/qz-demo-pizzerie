@@ -30,11 +30,16 @@ describe("summarize on run-complete", () => {
   it("takes the median of 3 Lighthouse runs per metric", () => {
     expect(s.pages.acasa.lighthouse).toEqual({
       performance: 48, accessibility: 81, seo: 67, bestPractices: 74,
-      lcpMs: 3000, cls: 0.21, tbtMs: 410, bytes: 2400000,
+      lcpMs: 3000, cls: 0.21, tbtMs: 410, bytes: 2400000, renderBlockingMs: 850,
     });
     expect(s.pages.meniu.lighthouse.performance).toBe(61);
     expect(s.pages.meniu.lighthouse.lcpMs).toBe(2100);
     expect(s.pages.rezervare.lighthouse.lcpMs).toBe(1800);
+  });
+
+  it("reads render-blocking time as 0 when the insight passes or is not applicable (R33)", () => {
+    expect(s.pages.meniu.lighthouse.renderBlockingMs).toBe(0);
+    expect(s.pages.rezervare.lighthouse.renderBlockingMs).toBe(0);
   });
 
   it("sums axe violations over projects and deduplicates rules", () => {
@@ -120,6 +125,33 @@ describe("summarize refuses an incomplete or invalid run", () => {
     expect(() => summarize(dir)).toThrow(/lighthouse-meniu-2\.json\.gz.*lcpMs/);
     expect(existsSync(join(dir, "summary.json"))).toBe(false);
     expect(readdirSync(dir).filter((f) => f.includes("summary"))).toEqual([]);
+  });
+
+  it("counts a not-applicable render-blocking run as 0 in the median (R33)", () => {
+    const dir = copyOf("run-complete");
+    for (const n of [1, 3]) {
+      const lhr = readRaw(dir, `lighthouse-acasa-${n}`);
+      lhr.audits["render-blocking-insight"] = { scoreDisplayMode: "notApplicable", score: null };
+      writeRaw(dir, `lighthouse-acasa-${n}`, lhr);
+    }
+    expect(summarize(dir).pages.acasa.lighthouse.renderBlockingMs).toBe(0);
+  });
+
+  it("throws when the render-blocking audit is absent, errored or not in ms (R33)", () => {
+    const cases = [
+      undefined,
+      { scoreDisplayMode: "error", score: null, errorMessage: "trace failed" },
+      { scoreDisplayMode: "metricSavings", score: 0, numericValue: 1200, numericUnit: "byte" },
+    ];
+    for (const audit of cases) {
+      const dir = copyOf("run-complete");
+      const lhr = readRaw(dir, "lighthouse-rezervare-2");
+      if (audit === undefined) delete lhr.audits["render-blocking-insight"];
+      else lhr.audits["render-blocking-insight"] = audit;
+      writeRaw(dir, "lighthouse-rezervare-2", lhr);
+      expect(() => summarize(dir)).toThrow(/lighthouse-rezervare-2\.json\.gz.*renderBlockingMs/);
+      expect(existsSync(join(dir, "summary.json"))).toBe(false);
+    }
   });
 
   it("throws on a null category score instead of reading it as 0", () => {

@@ -30,6 +30,8 @@ export type PageSummary = {
     cls: number;
     tbtMs: number;
     bytes: number;
+    /** render-blocking-insight's estimated saving in ms; 0 when Lighthouse reports nothing render-blocking. */
+    renderBlockingMs: number;
   };
   /** violations: summed over the 3 Playwright projects. rules: sorted, deduplicated rule ids. */
   axe: { violations: number; rules: string[] };

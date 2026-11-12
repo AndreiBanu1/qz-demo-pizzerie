@@ -1,10 +1,11 @@
-import { cpSync, mkdtempSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { validateFindings, type Finding } from "./findings";
+import { findings, validateFindings, type Finding } from "./findings";
+import type { Summary } from "./summary-schema";
 import planted from "./planted-issues.json";
-import { summarize } from "./summarize.mjs";
+import { getEvidence, summarize } from "./summarize.mjs";
 
 const dir = mkdtempSync(join(tmpdir(), "findings-"));
 cpSync(new URL("./fixtures/run-complete", import.meta.url).pathname, dir, { recursive: true });
@@ -117,5 +118,67 @@ describe("validateFindings", () => {
       expect(msgs[0]).toContain("F-01");
       expect(msgs[0]).toContain("wontFix");
     }
+  });
+});
+
+describe("the findings of the first run (2026-11-12-before)", () => {
+  const runDir = new URL("./runs/2026-11-12-before/", import.meta.url).pathname;
+  const beforeSummary = JSON.parse(readFileSync(join(runDir, "summary.json"), "utf8")) as Summary;
+
+  it("are valid against the real summary.json", () => {
+    expect(validateFindings(findings, beforeSummary, planted)).toEqual([]);
+  });
+
+  it("are numbered F-01… in severity order, critica first", () => {
+    const order = ["critica", "mare", "medie", "mica"];
+    findings.forEach((f, i) => expect(f.id).toBe(`F-${String(i + 1).padStart(2, "0")}`));
+    const ranks = findings.map((f) => order.indexOf(f.severity));
+    expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
+  });
+
+  it("name raw files and screenshots that exist in the run dir", () => {
+    for (const f of findings) {
+      for (const file of f.evidenceFiles) expect(existsSync(join(runDir, file)), `${f.id} ${file}`).toBe(true);
+      for (const file of f.screenshots) expect(existsSync(join(runDir, "screenshots", file)), `${f.id} ${file}`).toBe(true);
+    }
+  });
+
+  it("point each qa.failures key at a failure of the matching spec", () => {
+    const specs: Record<string, string[]> = {
+      "F-01": ["no-sideways-scroll.spec.ts › rezervare", "reservation.spec.ts › inputs are at least 16 px"],
+      "F-02": ["call.spec.ts", "keyboard.spec.ts"],
+      "F-05": ["opening-status.spec.ts"],
+      "F-08": ["axe.spec.ts › meniu"],
+      "F-09": ["reservation.spec.ts › every field has a label", "reservation.spec.ts › a valid reservation"],
+      "F-10": ["axe.spec.ts › acasa", "axe.spec.ts › rezervare"],
+      "F-11": ["links.spec.ts"],
+      "F-17": ["not-found.spec.ts"],
+    };
+    for (const f of findings) {
+      for (const key of f.evidence.filter((k) => k.startsWith("qa.failures."))) {
+        const { title } = getEvidence(beforeSummary, key) as { title: string };
+        expect(specs[f.id]?.some((s) => title.startsWith(s)), `${f.id} ${key}: ${title}`).toBe(true);
+      }
+    }
+  });
+
+  it("give every planted issue in the answer key exactly one finding", () => {
+    for (const { id } of planted) {
+      expect(findings.filter((f) => f.planted === id).map((f) => f.id), id).toHaveLength(1);
+    }
+    expect(findings.filter((f) => f.planted !== null)).toHaveLength(planted.length);
+  });
+
+  it("point F-12 (P-02) at the render-blocking time of every page (R33)", () => {
+    const f12 = findings.find((f) => f.id === "F-12");
+    expect(f12?.planted).toBe("P-02");
+    for (const page of ["acasa", "meniu", "rezervare"]) {
+      expect(f12?.evidence).toContain(`pages.${page}.lighthouse.renderBlockingMs`);
+    }
+  });
+
+  it("mark only the deliberate noindex as won't fix, and leave every fixCommit empty", () => {
+    expect(findings.filter((f) => f.wontFix !== null).map((f) => f.id)).toEqual(["F-07"]);
+    expect(findings.every((f) => f.fixCommit === null)).toBe(true);
   });
 });
