@@ -52,6 +52,8 @@ for (const page of pages) {
   const html = readFileSync(full, "utf8");
   const { file } = page;
 
+  if (html.match(/<html\b[^>]*\blang="([^"]*)"/)?.[1] !== "ro") fail(file, '<html lang> isn\'t "ro"');
+
   const titleTags = all(html, /<title>([\s\S]*?)<\/title>/gi);
   if (titleTags.length !== 1) fail(file, `expected 1 <title>, found ${titleTags.length}`);
   const title = decode(titleTags[0]?.[1] ?? "").trim();
