@@ -7,7 +7,8 @@ const HERO_WIDTHS = [640, 1280, 1920];
 type Props = {
   /** The photo's file name, with or without the .jpg ending, as in src/content/menu.ts. */
   name: string;
-  alt?: string;
+  /** Describes the photo for people who cannot see it. Required. */
+  alt: string;
   /** Tells the browser how wide the photo is shown, so it picks the smallest file that is sharp enough. */
   sizes: string;
   className?: string;

@@ -29,9 +29,9 @@ export default function Home() {
           </div>
         </div>
         <div className="rounded-[1.75rem] bg-white p-2 shadow-xl shadow-ink/10 ring-1 ring-ink/5 md:rotate-1">
-          {/* PLANTED P-03: no alt text */}
           <Picture
             name={heroPhoto.file}
+            alt={heroPhoto.alt}
             sizes="(min-width: 1024px) 457px, (min-width: 768px) 45vw, calc(100vw - 3rem)"
             className="block h-auto w-full rounded-[1.25rem]"
             priority

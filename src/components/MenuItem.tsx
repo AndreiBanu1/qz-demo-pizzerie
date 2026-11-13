@@ -4,8 +4,7 @@ import type { MenuItem as MenuItemData } from "../content/menu";
 export default function MenuItem({ item }: { item: MenuItemData }) {
   return (
     <li className="flex gap-4 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-ink/5">
-      {/* PLANTED P-03: no alt text */}
-      {item.photo && <Picture name={item.photo.file} sizes="96px" className="h-24 w-24 shrink-0 rounded-xl object-cover" />}
+      {item.photo && <Picture name={item.photo.file} alt={item.photo.alt} sizes="96px" className="h-24 w-24 shrink-0 rounded-xl object-cover" />}
       <div className="flex min-w-0 flex-1 flex-col justify-center py-1">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="text-lg leading-tight">{item.name}</h3>
