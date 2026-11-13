@@ -9,8 +9,7 @@ export default function MenuItem({ item }: { item: MenuItemData }) {
       <div className="flex min-w-0 flex-1 flex-col justify-center py-1">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="text-lg leading-tight">{item.name}</h3>
-          {/* PLANTED P-04: light grey price on a white card */}
-          <p className="shrink-0 font-semibold tabular-nums text-gray-300">{item.priceLei} lei</p>
+          <p className="shrink-0 font-semibold tabular-nums text-tomato-dark">{item.priceLei} lei</p>
         </div>
         <p className="mt-1 text-sm leading-snug text-muted">{item.ingredients}</p>
       </div>
