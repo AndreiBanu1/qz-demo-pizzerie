@@ -21,8 +21,9 @@ export function renderHead(id: PageId): string {
   const lines = [
     `<title>${escapeText(title)}</title>`,
     `<meta name="description" content="${escapeAttr(description)}" />`,
-    `<link rel="canonical" href="${escapeAttr(ORIGIN + path)}" />`,
   ];
+  // The 404 page has no address of its own, so it gets no canonical link.
+  if (id !== "404") lines.push(`<link rel="canonical" href="${escapeAttr(ORIGIN + path)}" />`);
   // The restaurant data goes on the home page and the menu. "<" is escaped so the data can't close the script tag.
   if (id === "acasa" || id === "meniu") {
     const json = JSON.stringify(restaurantJsonLd(ORIGIN)).replace(/</g, "\\u003c");

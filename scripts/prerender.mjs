@@ -30,4 +30,7 @@ for (const id of ["acasa", "meniu", "rezervare"]) {
   write(path === "/" ? "index.html" : `${path.slice(1)}.html`, pageHtml(id, path));
 }
 
+// Cloudflare Pages answers any path that has no file with 404.html and a 404 status.
+write("404.html", pageHtml("404", "/nu-exista"));
+
 rmSync(ssrDir, { recursive: true, force: true });

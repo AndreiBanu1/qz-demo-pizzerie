@@ -43,14 +43,20 @@ const tagsOf = (html, name, key, value) =>
 const titles = [];
 const descriptions = [];
 
-for (const page of pages) {
-  const full = join(DIST, page.file);
+const read = (file) => {
+  const full = join(DIST, file);
   if (!existsSync(full)) {
-    fail(page.file, "file missing");
-    continue;
+    fail(file, "file missing");
+    return null;
   }
-  const html = readFileSync(full, "utf8");
+  return readFileSync(full, "utf8");
+};
+
+// What every built file must have, including the 404 page: language, title, a description of the right length,
+// noindex, exactly one H1, the demo banner and no cedilla letters. `page.canonical` is null where there must be none.
+function checkCommon(page, html) {
   const { file } = page;
+  const root = html.slice(html.indexOf('<div id="root">'));
 
   if (html.match(/<html\b[^>]*\blang="([^"]*)"/)?.[1] !== "ro") fail(file, '<html lang> isn\'t "ro"');
 
@@ -67,18 +73,28 @@ for (const page of pages) {
   descriptions.push(description);
 
   const canon = tagsOf(html, "link", "rel", "canonical");
-  const wantCanon = ORIGIN + page.path;
-  if (canon.length !== 1) fail(file, `expected 1 canonical, found ${canon.length}`);
-  else if (attr(canon[0], "href") !== wantCanon) fail(file, `canonical is "${attr(canon[0], "href")}", want "${wantCanon}"`);
+  if (page.canonical === null) {
+    if (canon.length) fail(file, "has a canonical link");
+  } else if (canon.length !== 1) fail(file, `expected 1 canonical, found ${canon.length}`);
+  else if (attr(canon[0], "href") !== page.canonical) fail(file, `canonical is "${attr(canon[0], "href")}", want "${page.canonical}"`);
 
   if (!tagsOf(html, "meta", "name", "robots").some((t) => attr(t, "content").includes("noindex"))) fail(file, "noindex meta missing");
 
-  const root = html.slice(html.indexOf('<div id="root">'));
   const h1s = all(root, /<h1\b[^>]*>([\s\S]*?)<\/h1>/gi);
   if (h1s.length !== 1) fail(file, `expected 1 <h1>, found ${h1s.length}`);
   else if (!decode(h1s[0][1].replace(/<[^>]+>/g, "")).includes(page.h1)) fail(file, `<h1> doesn't contain "${page.h1}"`);
 
   if (!decode(root).includes(BANNER)) fail(file, "demo banner text missing");
+  if (/[şţŞŢ]/.test(html)) fail(file, "uses cedilla ş/ţ instead of comma-below ș/ț");
+  return root;
+}
+
+for (const page of pages) {
+  const html = read(page.file);
+  if (html === null) continue;
+  const { file } = page;
+  const root = checkCommon({ ...page, canonical: ORIGIN + page.path }, html);
+
   const blocks = all(html, /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi).map((m) => m[1]);
   if (!page.jsonLd) {
     if (blocks.length) fail(file, "has structured data, want none on this page");
@@ -107,9 +123,18 @@ for (const page of pages) {
       fail(file, `invalid JSON-LD: ${e.message}`);
     }
   }
-  if (/[şţŞŢ]/.test(html)) fail(file, "uses cedilla ş/ţ instead of comma-below ș/ț");
 
   if (page.menu) for (const name of MENU_ITEMS) if (!decode(root).includes(name)) fail(file, `menu item "${name}" missing from the HTML`);
+}
+
+// The page Cloudflare Pages serves, with a 404 status, for any path that has no file.
+{
+  const html = read("404.html");
+  if (html !== null) {
+    const root = checkCommon({ file: "404.html", title: "Pagina nu există – Pizza Mița", h1: "Pagina nu există", canonical: null }, html);
+    if (/application\/ld\+json/.test(html)) fail("404.html", "has structured data");
+    if (!/<a\b[^>]*\shref="\/"/.test(root.slice(root.indexOf("<main")))) fail("404.html", "no link back to the home page");
+  }
 }
 
 if (new Set(titles).size !== titles.length) failures.push("titles are not unique across pages");
@@ -119,4 +144,4 @@ if (failures.length) {
   console.error(`SEO checks failed (${failures.length}):\n- ${failures.join("\n- ")}`);
   process.exit(1);
 }
-console.log(`SEO checks OK (${pages.length} files)`);
+console.log(`SEO checks OK (${pages.length + 1} files)`);
