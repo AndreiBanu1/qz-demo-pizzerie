@@ -14,9 +14,13 @@ const MENU_ITEMS = [
   "Limonadă de casă", "Suc de portocale", "Bere la draft",
 ];
 
+const RESTAURANT_FIELDS = [
+  "name", "url", "address", "telephone", "openingHoursSpecification", "servesCuisine", "priceRange", "hasMenu", "image",
+];
+
 const pages = [
-  { file: "index.html", path: "/", title: "Pizza Mița – pizzerie în Orașul Demo (site demonstrativ)", h1: "Pizza Mița" },
-  { file: "meniu.html", path: "/meniu", title: "Meniu – Pizza Mița", h1: "Meniu", menu: true },
+  { file: "index.html", path: "/", jsonLd: true, title: "Pizza Mița – pizzerie în Orașul Demo (site demonstrativ)", h1: "Pizza Mița" },
+  { file: "meniu.html", path: "/meniu", jsonLd: true, title: "Meniu – Pizza Mița", h1: "Meniu", menu: true },
   { file: "rezervare.html", path: "/rezervare", title: "Rezervă o masă – Pizza Mița", h1: "Rezervă o masă" },
 ];
 
@@ -73,6 +77,34 @@ for (const page of pages) {
   else if (!decode(h1s[0][1].replace(/<[^>]+>/g, "")).includes(page.h1)) fail(file, `<h1> doesn't contain "${page.h1}"`);
 
   if (!decode(root).includes(BANNER)) fail(file, "demo banner text missing");
+  const blocks = all(html, /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi).map((m) => m[1]);
+  if (!page.jsonLd) {
+    if (blocks.length) fail(file, "has structured data, want none on this page");
+  } else if (blocks.length !== 1) {
+    fail(file, `expected 1 JSON-LD block, found ${blocks.length}`);
+  } else {
+    try {
+      const data = JSON.parse(blocks[0]);
+      if (data["@type"] !== "Restaurant") fail(file, `JSON-LD @type is "${data["@type"]}", want Restaurant`);
+      const missing = RESTAURANT_FIELDS.filter((f) => !data[f] || (Array.isArray(data[f]) && !data[f].length));
+      if (missing.length) fail(file, `JSON-LD is missing: ${missing.join(", ")}`);
+      for (const banned of ["geo", "aggregateRating", "review"]) if (banned in data) fail(file, `JSON-LD has "${banned}"`);
+      if (data.openingHoursSpecification?.length !== 6) fail(file, "JSON-LD should list 6 opening days");
+      if (data.url !== ORIGIN + "/" || data.hasMenu !== ORIGIN + "/meniu") fail(file, "JSON-LD url or hasMenu is wrong");
+      const address = data.address ?? {};
+      if (
+        address["@type"] !== "PostalAddress" ||
+        address.streetAddress !== "Strada Exemplului 0" ||
+        address.addressLocality !== "Orașul Demo" ||
+        address.addressCountry !== "RO"
+      )
+        fail(file, `JSON-LD address is ${JSON.stringify(address)}, want Strada Exemplului 0, Orașul Demo, RO`);
+      if (data.telephone !== "0000000000") fail(file, `JSON-LD telephone is "${data.telephone}", want "0000000000"`);
+      if (data.servesCuisine !== "Pizza" || data.priceRange !== "25–55 lei") fail(file, "JSON-LD servesCuisine or priceRange is wrong");
+    } catch (e) {
+      fail(file, `invalid JSON-LD: ${e.message}`);
+    }
+  }
   if (/[şţŞŢ]/.test(html)) fail(file, "uses cedilla ş/ţ instead of comma-below ș/ț");
 
   if (page.menu) for (const name of MENU_ITEMS) if (!decode(root).includes(name)) fail(file, `menu item "${name}" missing from the HTML`);
