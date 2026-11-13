@@ -1,0 +1,38 @@
+{
+  "hero-cuptor": {
+    "width": 6000,
+    "height": 4000
+  },
+  "paste-spaghete-bolognese": {
+    "width": 6144,
+    "height": 4096
+  },
+  "paste-spaghete-pomodoro": {
+    "width": 4000,
+    "height": 6000
+  },
+  "pizza-diavola": {
+    "width": 4672,
+    "height": 4672
+  },
+  "pizza-margherita": {
+    "width": 3944,
+    "height": 7008
+  },
+  "pizza-pepperoni": {
+    "width": 4900,
+    "height": 3409
+  },
+  "pizza-quattro-stagioni": {
+    "width": 4160,
+    "height": 3120
+  },
+  "pizza-salami": {
+    "width": 3456,
+    "height": 2304
+  },
+  "pizza-taraneasca": {
+    "width": 7513,
+    "height": 5011
+  }
+}

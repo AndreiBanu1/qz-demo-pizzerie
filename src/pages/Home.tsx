@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import CallButton from "../components/CallButton";
+import Picture from "../components/Picture";
 import HoursTable from "../components/HoursTable";
 import OpeningStatus from "../components/OpeningStatus";
 import TownMap from "../components/TownMap";
@@ -28,8 +29,13 @@ export default function Home() {
           </div>
         </div>
         <div className="rounded-[1.75rem] bg-white p-2 shadow-xl shadow-ink/10 ring-1 ring-ink/5 md:rotate-1">
-          {/* PLANTED P-01, PLANTED P-03: the full-size hero photo, with no alt, width, height or lazy loading */}
-          <img src={`/img/${heroPhoto.file}`} className="block h-auto w-full rounded-[1.25rem]" />
+          {/* PLANTED P-03: no alt text */}
+          <Picture
+            name={heroPhoto.file}
+            sizes="(min-width: 1024px) 457px, (min-width: 768px) 45vw, calc(100vw - 3rem)"
+            className="block h-auto w-full rounded-[1.25rem]"
+            priority
+          />
         </div>
       </section>
 

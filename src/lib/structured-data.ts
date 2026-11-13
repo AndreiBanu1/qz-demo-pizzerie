@@ -35,6 +35,6 @@ export function restaurantJsonLd(origin: string): Record<string, unknown> {
     servesCuisine: "Pizza",
     priceRange: restaurant.priceRange,
     hasMenu: `${origin}/meniu`,
-    image: `${origin}/img/${heroPhoto.file}`,
+    image: `${origin}/img/${heroPhoto.file.replace(/\.jpg$/, "-1280.webp")}`,
   };
 }
