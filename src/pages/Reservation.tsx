@@ -7,12 +7,14 @@ type Errors = Partial<Record<FieldName, string>>;
 
 function Field({
   name,
+  label,
   placeholder,
   error,
   type = "text",
   className = "",
 }: {
   name: FieldName;
+  label: string;
   placeholder: string;
   error?: string;
   type?: string;
@@ -20,9 +22,12 @@ function Field({
 }) {
   return (
     <div className={className}>
-      {/* PLANTED P-05: a placeholder but no <label> */}
+      <label htmlFor={`rez-${name}`} className="mb-1.5 block text-sm font-semibold">
+        {label}
+      </label>
       {/* PLANTED P-07: text-sm (14 px) inputs make iOS zoom in */}
       <input
+        id={`rez-${name}`}
         name={name}
         type={type}
         placeholder={placeholder}
@@ -79,11 +84,11 @@ export default function Reservation() {
           // PLANTED P-07: a fixed 600 px width, so on a phone the page scrolls sideways and the button is off screen
           <form noValidate onSubmit={onSubmit} className="w-[600px] shrink-0 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-ink/5">
             <div className="grid grid-cols-2 gap-4">
-              <Field name="nume" placeholder="Nume" error={errors.nume} className="col-span-2" />
-              <Field name="telefon" type="tel" placeholder="Telefon" error={errors.telefon} />
-              <Field name="data" placeholder="Data" error={errors.data} />
-              <Field name="ora" placeholder="Ora" error={errors.ora} />
-              <Field name="persoane" type="number" placeholder="Persoane" error={errors.persoane} />
+              <Field name="nume" label="Nume" placeholder="Nume" error={errors.nume} className="col-span-2" />
+              <Field name="telefon" label="Telefon" type="tel" placeholder="Telefon" error={errors.telefon} />
+              <Field name="data" label="Data (zz.ll.aaaa)" placeholder="Data" error={errors.data} />
+              <Field name="ora" label="Ora" placeholder="Ora" error={errors.ora} />
+              <Field name="persoane" label="Persoane" type="number" placeholder="Persoane" error={errors.persoane} />
               <p className="self-center text-sm text-muted">Toate câmpurile sunt obligatorii.</p>
               <button
                 type="submit"
