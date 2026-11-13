@@ -7,7 +7,7 @@ export default function OpeningStatus() {
   // The prerendered HTML has the weekly hours table and no status text, so hydration finds no mismatch.
   const [status, setStatus] = useState<Status | null>(null);
   useEffect(() => {
-    setStatus(openStatus(restaurant.hours, new Date(), "UTC")); // PLANTED P-08: UTC instead of Bucharest time
+    setStatus(openStatus(restaurant.hours, new Date(), restaurant.timeZone));
   }, []);
 
   if (!status) return <div className="h-8" aria-hidden="true" />;
