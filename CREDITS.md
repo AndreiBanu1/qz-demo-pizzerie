@@ -14,3 +14,7 @@ Photos are from Pexels.
 | public/img/pizza-pepperoni.jpg | Pepperoni | Sydney Troxell | https://www.pexels.com/photo/708587/ |
 | public/img/paste-spaghete-bolognese.jpg | Spaghete Bolognese | Daniela Elena Tentis | https://www.pexels.com/photo/725990/ |
 | public/img/paste-spaghete-pomodoro.jpg | Spaghete Pomodoro | cottonbro studio | https://www.pexels.com/photo/4057701/ |
+
+## Fonts
+
+Fraunces 600 (latin and latin-ext) is from the @fontsource/fraunces npm package, copied to public/fonts/. Fraunces is by Undercase Type and is licensed under the SIL Open Font License 1.1.
