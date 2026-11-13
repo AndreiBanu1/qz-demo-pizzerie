@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import NotFound from "./pages/NotFound";
 import Reservation from "./pages/Reservation";
+import { ORIGIN, pageIdForPath, pageMeta } from "./lib/page-meta";
 
 /** The page shell (banner, header, footer) around the routes. The router itself is supplied by the caller. */
 export default function AppRoutes() {
@@ -16,6 +17,25 @@ export default function AppRoutes() {
   useEffect(() => {
     if (!hash) window.scrollTo(0, 0);
   }, [pathname, hash]);
+
+  // The prerendered HTML already carries each page's title, description and canonical link; this keeps them right when you move between pages.
+  useEffect(() => {
+    const id = pageIdForPath(pathname);
+    const { title, description, path } = pageMeta[id];
+    document.title = title;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (id === "404") {
+      canonical?.remove(); // the 404 page has no address of its own
+    } else {
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.href = ORIGIN + path;
+    }
+  }, [pathname]);
 
   return (
     <div className="flex min-h-screen flex-col">
