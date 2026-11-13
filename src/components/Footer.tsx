@@ -44,8 +44,7 @@ export default function Footer() {
           <h2 className="text-sm font-sans font-semibold uppercase tracking-[0.14em] text-crust">Pe site</h2>
           <ul className="mt-1">
             <li>
-              {/* PLANTED P-15: points at /menu, which doesn't exist (the menu is at /meniu) */}
-              <Link to="/menu" className="inline-block py-1.5 underline underline-offset-4">
+              <Link to="/meniu" className="inline-block py-1.5 underline underline-offset-4">
                 Meniu
               </Link>
             </li>
