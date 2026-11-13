@@ -1,3 +1,7 @@
-# PLANTED P-13: only X-Robots-Tag is configured; no CSP, no frame-ancestors/X-Frame-Options and no Permissions-Policy.
 /*
   X-Robots-Tag: noindex
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
