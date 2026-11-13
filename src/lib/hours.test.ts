@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { openStatus, openStatusText } from "./hours";
+import { bucharestToday, openStatus, openStatusText } from "./hours";
 import { restaurant } from "../content/restaurant";
 
 const TZ = "Europe/Bucharest";
@@ -51,5 +51,20 @@ describe("openStatusText", () => {
   });
   it("formats today", () => {
     expect(openStatusText({ open: false, opensAt: "11:00", opensDay: "azi" })).toBe("Închis, deschidem azi la 11:00");
+  });
+});
+
+describe("bucharestToday", () => {
+  const ymd = (d: Date) => [d.getFullYear(), d.getMonth() + 1, d.getDate()];
+  it("gives Bucharest's calendar day, not UTC's, late in the evening", () => {
+    // 22:30 UTC on 16 November is already 00:30 on 17 November in Bucharest
+    expect(ymd(bucharestToday(new Date("2026-11-16T22:30:00Z")))).toEqual([2026, 11, 17]);
+  });
+  it("gives the same day around midday", () => {
+    expect(ymd(bucharestToday(new Date("2026-11-17T09:30:00Z")))).toEqual([2026, 11, 17]);
+  });
+  it("follows summer time", () => {
+    // 21:30 UTC on 30 June is 00:30 on 1 July (UTC+3)
+    expect(ymd(bucharestToday(new Date("2027-06-30T21:30:00Z")))).toEqual([2027, 7, 1]);
   });
 });

@@ -52,3 +52,18 @@ export function openStatusText(s: OpenStatus): string {
     ? `Deschis acum, până la ${s.closesAt}`
     : `Închis, deschidem ${s.opensDay} la ${s.opensAt}`;
 }
+
+/**
+ * Today's calendar day in Bucharest, as a date built with the local constructor, so that
+ * `checkRoDate` (which reads local getters) sees the same day a person in Bucharest sees.
+ */
+export function bucharestToday(now: Date): Date {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Bucharest",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  return new Date(get("year"), get("month") - 1, get("day"));
+}

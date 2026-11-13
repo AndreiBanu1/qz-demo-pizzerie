@@ -14,7 +14,7 @@ export function checkRoPhone(s: string): Check<string> {
   const v = s.replace(/[\s.\-]/g, "");
   const m = /^(?:\+40|0040|0)([237]\d{8})$/.exec(v);
   if (!m) {
-    return { ok: false, message: "Numărul de telefon nu pare corect. Exemplu: 0712 345 678." };
+    return { ok: false, message: "Numărul de telefon nu pare corect. Scrie-l așa: 07xx xxx xxx." };
   }
   return { ok: true, value: `+40${m[1]}` };
 }
