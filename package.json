@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/verify-seo.mjs && node scripts/write-version.mjs",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/verify-seo.mjs && node scripts/write-version.mjs && node scripts/verify-no-planted.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "audit": "node audit/run.mjs",

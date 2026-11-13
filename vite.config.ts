@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   build: {
-    sourcemap: true, // PLANTED P-14
+    sourcemap: false,
   },
   test: {
     // Playwright specs under audit/qa are not vitest tests.
