@@ -7,3 +7,7 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+# The raw audit files of the report. .json.gz is served as a gzip file to download, so browsers don't unzip it in transit.
+/raport/date/*.json.gz
+  Content-Type: application/gzip

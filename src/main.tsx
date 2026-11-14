@@ -3,6 +3,7 @@ import App from "./App";
 import { pageIdForPath } from "./lib/page-meta";
 import { loadReport } from "./pages/report/ReportRoute";
 import "./index.css";
+import "./pages/report/print.css";
 
 const root = document.getElementById("root")!;
 const hydrate = () => hydrateRoot(root, <App />);

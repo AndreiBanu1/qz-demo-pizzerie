@@ -183,7 +183,7 @@ function OwnerSummary({ lang }: { lang: Lang }) {
         />
       </dl>
 
-      <nav aria-labelledby="toc-title" className="mt-8">
+      <nav aria-labelledby="toc-title" className="report-toc mt-8">
         <h3 id="toc-title" className="text-lg">
           {s.tocHeading}
         </h3>
@@ -325,9 +325,9 @@ function Method({ lang }: { lang: Lang }) {
 export default function Report({ lang }: { lang: Lang }) {
   const c = copy[lang];
   return (
-    <div className="mx-auto max-w-3xl px-4 pb-4 pt-6 md:pt-10">
+    <div className="report-root mx-auto max-w-3xl px-4 pb-4 pt-6 md:pt-10">
       <header>
-        <p className="flex justify-end">
+        <p className="report-switch flex justify-end">
           <Link to={c.switchTo.path} hrefLang={c.switchTo.lang} lang={c.switchTo.lang} className={`${tapLink} -mr-3 text-sm`}>
             {c.switchTo.label}
           </Link>
@@ -354,6 +354,11 @@ export default function Report({ lang }: { lang: Lang }) {
           <li>
             <a href={restaurant.repoUrl} className={`${tapLink} -ml-3`}>
               {c.links.repo}
+            </a>
+          </li>
+          <li>
+            <a href={c.pdfHref} className={`${tapLink} -ml-3`}>
+              {c.links.pdf}
             </a>
           </li>
         </ul>

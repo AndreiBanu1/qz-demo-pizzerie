@@ -1,0 +1,234 @@
+/* Print styles for the audit report (/raport and /raport/en), used for the two PDFs.
+   Page 1 is the title and the owner summary on their own; the rest follows from page 2.
+   Everything is scoped to a page that has .report-root, so the restaurant pages print as before. */
+@page {
+  size: A4;
+  margin: 7mm 12mm;
+}
+
+@media print {
+  body:has(.report-root) {
+    font-size: 9.5pt;
+    line-height: 1.35;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* The site header, the language switch, the table of contents and the footer are for screens. The demo banner stays. */
+  body:has(.report-root) > #root header[class*="bg-cream"],
+  body:has(.report-root) footer,
+  .report-root .report-switch,
+  .report-root .report-toc {
+    display: none;
+  }
+
+  .report-root {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* A white page: the cream screen background would stop at the page margins. Cards keep their thin outline. */
+  body:has(.report-root) {
+    background: #fff;
+  }
+
+  /* Page 1: the title block and the owner summary, tightened to fit one A4 page. */
+  .report-root > header > p {
+    margin-top: 0.25rem;
+  }
+  .report-root h1 {
+    margin-top: 0.15rem;
+    font-size: 20pt;
+  }
+  .report-root > header p.text-lg {
+    font-size: 8.5pt;
+    line-height: 1.3;
+  }
+  /* Page 1 keeps the first lead paragraph; the second is on screen only. */
+  .report-root > header p.text-lg ~ p.text-lg {
+    display: none;
+  }
+  .report-root > header ul a {
+    min-height: 0;
+    margin-left: 0;
+    padding: 0;
+    font-size: 8.5pt;
+  }
+  #summary {
+    margin-top: 0.5rem;
+    break-after: page;
+  }
+  #summary h2 {
+    font-size: 14pt;
+  }
+  #summary h2 > span {
+    margin-bottom: 0.2rem;
+  }
+  #summary h3 {
+    margin-top: 0.5rem;
+    font-size: 11pt;
+  }
+  #summary dl,
+  #summary ol,
+  #summary table {
+    margin-top: 0.3rem;
+  }
+  #summary dl {
+    gap: 0.3rem;
+  }
+  #summary ol > li {
+    margin-top: 0.2rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    break-inside: avoid;
+  }
+  #summary ol > li:first-child {
+    margin-top: 0;
+  }
+  #summary ol > li p {
+    margin-top: 0.05rem;
+    font-size: 7.5pt;
+    line-height: 1.3;
+  }
+  #summary ol > li p.font-semibold {
+    margin-top: 0;
+    font-size: 8.5pt;
+  }
+  /* The status badge sits beside the title instead of above it. */
+  #summary ol > li > span {
+    float: left;
+    margin-right: 0.4rem;
+    padding: 0 0.45rem;
+    font-size: 7pt;
+    line-height: 1.5;
+  }
+  #summary ol > li > a {
+    display: none;
+  }
+  #summary dl > div {
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+  #summary dl dt {
+    font-size: 8pt;
+    line-height: 1.25;
+  }
+  #summary dd {
+    font-size: 7.5pt;
+    line-height: 1.25;
+  }
+  #summary dd span {
+    font-size: 7.5pt;
+    line-height: 1.25;
+  }
+  #summary dd > span {
+    margin-top: 0.1rem;
+  }
+  /* In print the four headline figures sit in one row and keep only their figure and one line of context.
+     The longer explanations are in the scorecard section. */
+  #summary dd > span.text-muted,
+  #summary dd > span.text-muted ~ span {
+    display: none;
+  }
+  #summary dl.sm\:grid-cols-2 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  #summary dl.sm\:grid-cols-2 > div {
+    padding: 0.3rem 0.4rem;
+  }
+  #summary dl.sm\:grid-cols-2 dt {
+    font-size: 7.5pt;
+  }
+  #summary dl.sm\:grid-cols-2 dd > span.block {
+    font-size: 6.5pt;
+  }
+  /* A row of the areas table is one line: the plain-language "about" text goes. */
+  #summary table th span {
+    display: none;
+  }
+  /* The big before and after figures. */
+  #summary dd > span.flex {
+    font-size: 15pt;
+    line-height: 1;
+  }
+  #summary dd > span.flex > span {
+    font-size: inherit;
+  }
+  #summary dd > span.flex > span[aria-hidden] {
+    padding-bottom: 0.7rem;
+    font-size: 12pt;
+  }
+  #summary dd > span.flex .uppercase {
+    font-size: 6pt;
+  }
+  #summary table {
+    font-size: 8pt;
+  }
+  #summary td,
+  #summary th {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+  }
+  #summary table td span {
+    padding: 0 0.5rem;
+    font-size: 7pt;
+    line-height: 1.5;
+  }
+  /* The three counts are one line each: label, then number. */
+  #summary > dl:first-of-type > div {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.2rem 0.5rem;
+  }
+  #summary > dl:first-of-type dd {
+    font-size: 12pt;
+    line-height: 1.2;
+  }
+  #summary > p.text-sm {
+    margin-top: 0.1rem;
+    font-size: 7pt;
+    line-height: 1.25;
+  }
+
+  /* The rest of the report. */
+  #scorecard,
+  #findings,
+  #planted,
+  #method {
+    margin-top: 1rem;
+  }
+  #scorecard {
+    margin-top: 0;
+  }
+  #findings article {
+    padding: 0.8rem 1rem;
+  }
+  figure,
+  #findings li {
+    break-inside: avoid;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  /* Links worth reading on paper show where they go. The PDF's links are full addresses (scripts/make-pdf.mjs). */
+  .report-root a[href^="http"]:not([href*="pagespeed.web.dev"]):not([href*="/raport/date/"])::after,
+  #method a[href*="/raport/date/"]::after {
+    content: " (" attr(href) ")";
+    font-weight: 400;
+    font-size: 7.5pt;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+  .report-root a[href*="/commit/"]::after {
+    display: block;
+    font-family: ui-monospace, monospace;
+  }
+  /* No second copy where the link's own text is the address, and none on page 1, which has no room. */
+  .report-root #method a[href$=".pages.dev"]::after,
+  .report-root > header ul a[href*="pizza-mita"]:not(#x)::after {
+    content: none;
+  }
+}

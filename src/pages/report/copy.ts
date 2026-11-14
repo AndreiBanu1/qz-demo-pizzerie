@@ -20,7 +20,9 @@ export type ReportCopy = {
   h1: string;
   lead: readonly string[];
   checkYourself: string;
-  links: { before: string; after: string; repo: string };
+  links: { before: string; after: string; repo: string; pdf: string };
+  /** Where the PDF copy of this language's report is served. */
+  pdfHref: string;
 
   /** Spec §8 part 1. */
   summary: {
@@ -214,7 +216,8 @@ const ro: ReportCopy = {
     "Așa arată raportul pe care l-ai primi pentru site-ul tău: ce nu merge, de ce contează pentru afacerea ta și ce am reparat. Fiecare cifră de aici vine din fișierele brute ale măsurătorilor, pe care le poți deschide și tu.",
   ],
   checkYourself: "Verifică singur:",
-  links: { before: "Site-ul înainte", after: "Site-ul reparat", repo: "Codul și datele, pe GitHub" },
+  links: { before: "Site-ul înainte", after: "Site-ul reparat", repo: "Codul și datele, pe GitHub", pdf: "Raportul, ca PDF" },
+  pdfHref: "/raport/pizza-mita-audit-ro.pdf",
 
   summary: {
     heading: "Pe scurt",
@@ -519,7 +522,8 @@ const en: ReportCopy = {
     "This is the report you would get for your own site: what doesn't work, why it matters to your business and what I fixed. Every figure here comes from the raw files of the measurements, which you can open yourself.",
   ],
   checkYourself: "Check it yourself:",
-  links: { before: "The site before", after: "The fixed site", repo: "Code and data, on GitHub" },
+  links: { before: "The site before", after: "The fixed site", repo: "Code and data, on GitHub", pdf: "The report, as a PDF" },
+  pdfHref: "/raport/pizza-mita-audit-en.pdf",
 
   summary: {
     heading: "In short",
