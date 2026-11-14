@@ -34,9 +34,11 @@ function pinDates(buf) {
 }
 
 const port = await freePort();
-const server = await preview({ root: ROOT, logLevel: "error", preview: { port, strictPort: true, host: "127.0.0.1" } });
-const browser = await chromium.launch();
+let server;
+let browser;
 try {
+  server = await preview({ root: ROOT, logLevel: "error", preview: { port, strictPort: true, host: "127.0.0.1" } });
+  browser = await chromium.launch();
   mkdirSync(OUT, { recursive: true });
   for (const [path, file] of [
     ["/raport", "pizza-mita-audit-ro.pdf"],
@@ -55,6 +57,6 @@ try {
     await page.close();
   }
 } finally {
-  await browser.close();
-  await server.close();
+  await browser?.close();
+  await server?.close();
 }

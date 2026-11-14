@@ -11,3 +11,8 @@
 # The raw audit files of the report. .json.gz is served as a gzip file to download, so browsers don't unzip it in transit.
 /raport/date/*.json.gz
   Content-Type: application/gzip
+
+# The report PDFs open in the browser's built-in viewer, which the page CSP's object-src 'none' can block, so these drop the CSP.
+# They are still noindex and carry every other header from /*.
+/raport/*.pdf
+  ! Content-Security-Policy

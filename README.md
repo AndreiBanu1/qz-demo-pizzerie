@@ -12,7 +12,7 @@ Pizza Mița is not a real business:
 
 Both are hosted on Cloudflare Pages:
 
-- https://pizza-mita-inainte.pages.dev is the weak "before" version (the `before` branch, never changed after the first audit).
+- https://pizza-mita-inainte.pages.dev is the weak "before" version (the `before` branch, frozen since the audit; it moved once, for the hosting change to Cloudflare Pages).
 - https://pizza-mita.pages.dev is the fixed version (this branch, `main`).
 
 ## The report
@@ -27,7 +27,7 @@ Every figure in the report comes from the raw files of the two audit runs. Those
 
 ## Fix history
 
-The `before` branch is frozen, and the tag `before-v2` marks the exact commit that was audited as "before". On `main`, each finding in the report has its own commit, named `fix(F-NN): …`, so you can open the commit for any finding and see exactly what changed.
+The `before` branch is frozen, and the tag `before-v2` (commit 1b68d35) is the commit that was audited as "before". The older tag `before-v1` is the first version, from the Netlify days, which was never deployed or audited. On `main`, each finding in the report has its own commit, named `fix(F-NN): …`, so you can open the commit for any finding and see exactly what changed.
 
 ## Running an audit
 
@@ -37,7 +37,9 @@ npm run audit -- after    # audit the fixed site
 npm run audit -- both     # audit both, one after the other
 ```
 
-A run measures speed (Lighthouse), accessibility (axe), security headers (Mozilla Observatory), SEO checks on the HTML and a set of Playwright tests, and writes everything to `audit/runs/<date>-<before|after>/`. See `audit/manual-template.md` for the manual checks that no tool can do.
+Before you start: both sites must be live (the audit measures the Cloudflare Pages addresses above), and the browsers must be installed once with `npx playwright install`.
+
+A run measures speed (Lighthouse), accessibility (axe), security headers (Mozilla Observatory), SEO checks on the HTML and a set of Playwright tests, and writes everything to `audit/runs/<date>-<before|after>/`. A second run on the same day gets a `-2` suffix (then `-3`, and so on), so it never overwrites the first. To have the report use a new run, set its folder name in `audit/report-run.json`. See `audit/manual-template.md` for the manual checks that no tool can do.
 
 ## Commands
 

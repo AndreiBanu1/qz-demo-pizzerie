@@ -208,9 +208,24 @@
   #findings li {
     break-inside: avoid;
   }
+  /* A heading or a finding-card label (h4) is never the last line of a page. */
   h2,
-  h3 {
+  h3,
+  h4 {
     break-after: avoid;
+  }
+  #findings article p,
+  #findings article dd {
+    orphans: 2;
+    widows: 2;
+  }
+  /* The card's area and pages lines stay with the first section under them. */
+  #findings article > p,
+  #findings article > dl {
+    break-after: avoid;
+  }
+  #findings article > h4 + p {
+    break-before: avoid;
   }
 
   /* Links worth reading on paper show where they go. The PDF's links are full addresses (scripts/make-pdf.mjs). */
@@ -226,6 +241,11 @@
     display: block;
     font-family: ui-monospace, monospace;
   }
+  /* The PDF has no use for a link to itself. */
+  .report-root > header li:has(a[href$=".pdf"]) {
+    display: none;
+  }
+  /* Of the header links only the GitHub one prints its address: the two sites' addresses are in the method section, and page 1 has no room for more. */
   /* No second copy where the link's own text is the address, and none on page 1, which has no room. */
   .report-root #method a[href$=".pages.dev"]::after,
   .report-root > header ul a[href*="pizza-mita"]:not(#x)::after {
