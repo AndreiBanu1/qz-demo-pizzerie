@@ -1,5 +1,5 @@
 // The audit findings, hand-written after the first run of the weak site and
-// completed with the fixes and the same-session comparison run (audit/report-run.json).
+// completed with the fixes and the before and after runs the report compares (audit/report-run.json).
 // Each finding points at evidence keys in the report's before summary.json; the
 // published report fails to build when validateFindings() returns anything.
 import type { PageId, Summary } from "./summary-schema";
@@ -29,6 +29,8 @@ export type Finding = {
   fixCommit: string | null;
   /** Earlier commits that were part of the same fix. */
   alsoCommits?: string[];
+  /** Why the fix took more than one commit, shown with the commit list; only with alsoCommits. */
+  commitsNote?: { ro: string; en: string };
   wontFix: { ro: string; en: string } | null;
   text: { ro: Copy; en: Copy };
 };
@@ -402,13 +404,13 @@ export const findings: Finding[] = [
         title: "Linkul „Meniu” din josul paginii duce la o pagină inexistentă",
         what: "În partea de jos a fiecărei pagini, linkul „Meniu” duce la o adresă greșită, iar vizitatorul ajunge pe pagina „Pagina nu există”. Am deschis fiecare link de pe cele trei pagini, pe trei dispozitive, și doar acesta e stricat.",
         why: "Cine a citit până jos și vrea meniul dă de o eroare. Unii renunță acolo, deși erau gata să comande.",
-        fix: "Corectez adresa linkului și păstrez o verificare automată care deschide toate linkurile interne după fiecare schimbare.",
+        fix: "Corectez adresa linkului. Testul automat (Playwright) care deschide toate linkurile interne de pe cele trei pagini rulează la fiecare măsurătoare a site-ului, iar fiecare construire a site-ului verifică automat că linkurile raportului spre dovezi duc la fișiere care există.",
       },
       en: {
         title: "The “Meniu” (Menu) link at the bottom of the page leads to a page that doesn't exist",
         what: "At the bottom of every page, the “Meniu” link goes to a wrong address, and the visitor lands on the “Pagina nu există” (Page doesn't exist) page. I opened every link on the three pages, on three devices, and only this one is broken.",
         why: "Someone who read to the bottom and wants the menu runs into an error. Some give up there, even though they were ready to order.",
-        fix: "I correct the link's address and keep an automated check that opens every internal link after each change.",
+        fix: "I correct the link's address. The automated test (Playwright) that opens every internal link on the three pages runs in every measurement of the site, and every build of the site automatically checks that the report's links to its evidence lead to files that exist.",
       },
     },
   },
@@ -522,6 +524,10 @@ export const findings: Finding[] = [
     status: "fixed",
     fixCommit: "bcb0a0f",
     alsoCommits: ["a32b3db"],
+    commitsNote: {
+      ro: "Safari pune singur un stil ascuns, text-overflow:inherit, în fiecare listă derulantă de opțiuni, iar la verificarea pe site-ul publicat politica strictă îl raporta; de aceea al doilea commit permite exact acel stil, după amprenta lui (un hash, de aici 'unsafe-hashes' din politică), și orice alt stil scris direct în pagină rămâne blocat.",
+      en: "Safari adds a hidden style, text-overflow:inherit, to every drop-down list by itself; the check on the live site found the strict policy reporting it, so the second commit allows exactly that one style by its fingerprint (a hash, hence 'unsafe-hashes' in the policy), and every other style written straight into the page stays blocked.",
+    },
     wontFix: null,
     text: {
       ro: {
@@ -577,6 +583,10 @@ export const findings: Finding[] = [
     status: "fixed",
     fixCommit: "d4b55c7",
     alsoCommits: ["2ac9cf1"],
+    commitsNote: {
+      ro: "După primul commit, și adresa iconiței de filă (/favicon.ico), care lipsea, răspundea corect „pagină inexistentă”, iar browserul nota asta ca eroare la fiecare vizită; al doilea commit adaugă iconița.",
+      en: "After the first commit, the address of the tab icon (/favicon.ico), which was missing, also correctly answered “page not found”, and the browser logged that as an error on every visit; the second commit adds the icon.",
+    },
     wontFix: null,
     text: {
       ro: {
@@ -718,6 +728,16 @@ export function validateFindings(findings: Finding[], before: Summary, planted: 
         else if (lang === "ro" && CEDILLA.test(value)) {
           out.push(`${id}: text.ro.${field} uses cedilla diacritics (ş/ţ); use comma-below (ș/ț)`);
         }
+      }
+    }
+
+    if (f.commitsNote) {
+      if (!f.alsoCommits?.length) out.push(`${id}: has a commitsNote but no alsoCommits`);
+      for (const lang of ["ro", "en"] as const) {
+        if (f.commitsNote[lang].trim() === "") out.push(`${id}: commitsNote.${lang} is empty`);
+      }
+      if (CEDILLA.test(f.commitsNote.ro)) {
+        out.push(`${id}: commitsNote.ro uses cedilla diacritics (ş/ţ); use comma-below (ș/ț)`);
       }
     }
 

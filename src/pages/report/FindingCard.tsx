@@ -177,6 +177,7 @@ export default function FindingCard({ finding: f, lang }: { finding: Finding; la
                 </li>
               ))}
             </ul>
+            {commits.length > 1 && f.commitsNote && <p className="mt-2 text-sm">{f.commitsNote[lang]}</p>}
           </>
         )
       )}

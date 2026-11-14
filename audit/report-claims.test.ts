@@ -59,6 +59,45 @@ describe("the scorecard notes are true for the after run's raw Lighthouse files"
   }
 });
 
+// The method section's "measured twice" limit, about the after run that report-run.json's supersededAfter names.
+describe("the superseded after run the limits disclose", () => {
+  const superseded = (reportRun as { supersededAfter?: string }).supersededAfter;
+  const meta = (id: string) => JSON.parse(readFileSync(join(runDir(id), "meta.json"), "utf8"));
+
+  it("is named, and is an earlier after run of the same day, on the same computer and tools", () => {
+    expect(superseded).toBeTruthy();
+    const [b, s, a] = [meta(reportRun.before), meta(superseded!), meta(reportRun.after)];
+    expect(s.target).toBe("after");
+    expect(s.runId.slice(0, 10)).toBe(a.runId.slice(0, 10));
+    expect(Date.parse(s.startedAt)).toBeLessThan(Date.parse(a.startedAt));
+    expect([s.machine, s.node, s.tools]).toEqual([a.machine, a.node, a.tools]);
+    // "right after the weak version's": it started within five minutes of the before run's end.
+    const gap = Date.parse(s.startedAt) - Date.parse(b.finishedAt);
+    expect(gap).toBeGreaterThanOrEqual(0);
+    expect(gap).toBeLessThan(5 * 60 * 1000);
+  });
+
+  it("measured the commit before the finding's last fix, and the report's after run measured that fix", () => {
+    const fix = findings.find((f) => f.fixCommit !== null && meta(reportRun.after).version.commit.startsWith(f.fixCommit));
+    expect(fix?.id).toBe("F-17");
+    expect(fix?.alsoCommits?.length).toBeGreaterThan(0);
+    expect(meta(superseded!).version.commit.startsWith(fix!.fixCommit!)).toBe(false);
+  });
+
+  for (const page of PAGES) {
+    for (const n of [1, 2, 3]) {
+      it(`${page} run ${n}: best practices lost points only on a console error for the missing /favicon.ico`, () => {
+        const l = lhr(superseded!, page, n);
+        expect(failing(l, "best-practices")).toEqual(["errors-in-console"]);
+        const urls = (l.audits["errors-in-console"].details?.items ?? []).map((i) => i.sourceLocation?.url ?? "");
+        expect(urls.length).toBeGreaterThan(0);
+        for (const url of urls) expect(new URL(url).pathname).toBe("/favicon.ico");
+        expect(failing(lhr(reportRun.after, page, n), "best-practices")).toEqual([]);
+      });
+    }
+  }
+});
+
 // R61: the finding texts are hand-written prose, and some quote measured figures from the before run.
 // Each such figure is declared here against its evidence key(s) in the report's before summary, with the
 // rounding the prose uses. The test fails when the prose holds a figure nobody declared, when a declared
@@ -106,7 +145,7 @@ const WORDS: { id: string; text: { ro: string; en: string }; key: string; value:
 
 const proseOf = (id: string, lang: "ro" | "en") => {
   const f = findings.find((x) => x.id === id)!;
-  return [...Object.values(f.text[lang]), ...(f.wontFix ? [f.wontFix[lang]] : [])].join("\n");
+  return [...Object.values(f.text[lang]), ...(f.wontFix ? [f.wontFix[lang]] : []), ...(f.commitsNote ? [f.commitsNote[lang]] : [])].join("\n");
 };
 const figuresIn = (text: string) => [...text.matchAll(/\d+(?:[.,]\d+)?/g)].map((m) => m[0]);
 const values = (s: Summary, keys: string[]) => keys.map((k) => n(getEvidence(s, k)));

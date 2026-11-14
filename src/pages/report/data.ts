@@ -1,4 +1,4 @@
-// The report's data: the two summaries named in audit/report-run.json, the findings and the answer key.
+// The report's data: the summaries named in audit/report-run.json, the findings and the answer key.
 // Nothing here is typed by hand; every number on the report pages is read from these.
 import { findings, validateFindings } from "../../../audit/findings";
 import { getEvidence } from "../../../audit/evidence.mjs";
@@ -20,9 +20,16 @@ async function summaryFor(runId: string): Promise<Summary> {
 /** Set by loadSummaries(). Imports see the loaded values (ES module live bindings). */
 export let before: Summary = undefined as unknown as Summary;
 export let after: Summary = undefined as unknown as Summary;
+/** An earlier run of the fixed site that `after` replaced, which the method section discloses; null when there is none. */
+export let supersededAfter: Summary | null = null;
 
 export async function loadSummaries(): Promise<void> {
-  [before, after] = await Promise.all([summaryFor(reportRun.before), summaryFor(reportRun.after)]);
+  const superseded = (reportRun as { supersededAfter?: string }).supersededAfter;
+  [before, after, supersededAfter] = await Promise.all([
+    summaryFor(reportRun.before),
+    summaryFor(reportRun.after),
+    superseded ? summaryFor(superseded) : null,
+  ]);
 }
 
 export { findings, getEvidence, planted };

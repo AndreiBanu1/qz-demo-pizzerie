@@ -219,13 +219,18 @@
     orphans: 2;
     widows: 2;
   }
-  /* The card's area and pages lines stay with the first section under them. */
-  #findings article > p,
+  /* The card's area and pages lines stay with the first section under them. A card's last paragraph doesn't, or the
+     next card could not start on a new page. */
+  #findings article > p:not(:last-child),
   #findings article > dl {
     break-after: avoid;
   }
   #findings article > h4 + p {
     break-before: avoid;
+  }
+  /* A card's title is never split across two pages. */
+  #findings article > h3 {
+    break-inside: avoid;
   }
 
   /* Links worth reading on paper show where they go. The PDF's links are full addresses (scripts/make-pdf.mjs). */

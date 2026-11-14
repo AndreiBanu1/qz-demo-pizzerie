@@ -120,6 +120,16 @@ describe("validateFindings", () => {
     expect(run([make({ status: "wont-fix", fixCommit: null, wontFix: { ro: "Intenționat", en: "Deliberate" } })])).toEqual([]);
   });
 
+  it("accepts a commitsNote with both languages next to alsoCommits", () => {
+    expect(run([make({ alsoCommits: ["def5678"], commitsNote: { ro: "De ce", en: "Why" } })])).toEqual([]);
+  });
+
+  it("reports a commitsNote without alsoCommits, with an empty language, or with cedilla diacritics", () => {
+    expect(run([make({ commitsNote: { ro: "De ce", en: "Why" } })])[0]).toContain("no alsoCommits");
+    expect(run([make({ alsoCommits: ["def5678"], commitsNote: { ro: "De ce", en: " " } })])[0]).toContain("commitsNote.en is empty");
+    expect(run([make({ alsoCommits: ["def5678"], commitsNote: { ro: "Aşa", en: "Why" } })])[0]).toContain("commitsNote.ro");
+  });
+
   it("reports cedilla diacritics in wontFix.ro", () => {
     const msgs = run([make({ status: "wont-fix", fixCommit: null, wontFix: { ro: "Intenţionat", en: "Deliberate" } })]);
     expect(msgs).toHaveLength(1);
@@ -208,6 +218,16 @@ describe("the findings of the report's runs (audit/report-run.json)", () => {
     expect(beforeSummary.target).toBe("before");
     expect(afterSummary.target).toBe("after");
     expect(reportRun.before.slice(0, 10)).toBe(reportRun.after.slice(0, 10));
+  });
+
+  // The scorecard intro says: the same day, the same computer, the same tools.
+  it("come from the same computer, Node and tool versions", () => {
+    const meta = (id: string) => JSON.parse(readFileSync(new URL(`./runs/${id}/meta.json`, import.meta.url), "utf8"));
+    const [b, a] = [meta(reportRun.before), meta(reportRun.after)];
+    expect(a.machine).toBe(b.machine);
+    expect(a.node).toBe(b.node);
+    expect(a.tools).toEqual(b.tools);
+    expect(afterSummary.tools).toEqual(beforeSummary.tools);
   });
 
   it("are valid against the real before and after summary.json", () => {

@@ -52,6 +52,8 @@ export type ReportCopy = {
   scorecard: {
     heading: string;
     intro: T<"before" | "after">;
+    /** Shown after the intro when the report's after run replaced an earlier one. */
+    measuredTwice: string;
     lighthouse: string;
     termsHeading: string;
     terms: { lcp: string; cls: string; tbt: string; csp: string };
@@ -186,6 +188,9 @@ export type ReportCopy = {
       hsts: string;
       activeSecurity: string;
       notAudited: string;
+      /** The earlier after run that the report's after run replaced, and why. */
+      measuredTwice: T<"score" | "firstRun" | "firstDate" | "id" | "sha" | "run">;
+      measuredTwiceLink: string;
     };
     psiHeading: string;
     psiAbout: string;
@@ -281,7 +286,8 @@ const ro: ReportCopy = {
   scorecard: {
     heading: "Înainte și după, în cifre",
     intro: ({ before, after }) =>
-      `Am măsurat ambele versiuni în aceeași sesiune, una după alta: versiunea slabă pe ${before}, cea reparată pe ${after}, ora României.`,
+      `Am măsurat ambele versiuni în aceeași zi, de pe același calculator, cu aceleași unelte: versiunea slabă pe ${before}, cea reparată pe ${after}, ora României.`,
+    measuredTwice: "Versiunea reparată am măsurat-o de două ori; explic de ce la limite, la final.",
     lighthouse:
       "Scorurile, LCP, CLS, TBT, greutatea paginii și întârzierea vin din Lighthouse, pe un telefon simulat. Fiecare e mediana a trei rulări, adică valoarea din mijloc.",
     termsHeading: "Câțiva termeni",
@@ -496,6 +502,9 @@ const ro: ReportCopy = {
         "N-am făcut teste de securitate active, adică încercări de atac, și nici teste ale conexiunii securizate (TLS), de care se ocupă Cloudflare. Am verificat doar ce trimite site-ul și ce fișiere poate descărca oricine.",
       notAudited:
         "Paginile acestui raport nu fac parte din măsurători. Nici verificarea linkurilor nu intră în ele, pentru că raportul trimite la fișierele brute ale măsurătorii care încă se făcea.",
+      measuredTwice: ({ score, firstRun, firstDate, id, sha, run }) =>
+        `Versiunea reparată am măsurat-o de două ori. Prima măsurătoare, ${firstRun}, făcută pe ${firstDate}, ora României, imediat după cea a versiunii slabe, a dat scorul de bune practici ${score} pe fiecare pagină: de la prima reparație ${id}, orice adresă care nu există primea răspunsul „pagină inexistentă”, inclusiv /favicon.ico, adresa iconiței de filă, care încă lipsea, iar browserul nota asta ca eroare. A doua reparație ${id}, commitul ${sha}, a adăugat iconița, iar raportul folosește măsurătoarea refăcută după ea, ${run}.`,
+      measuredTwiceLink: "Toate fișierele primei măsurători, pe GitHub",
     },
     psiHeading: "Verifică singur viteza",
     psiAbout:
@@ -587,7 +596,8 @@ const en: ReportCopy = {
   scorecard: {
     heading: "Before and after, in numbers",
     intro: ({ before, after }) =>
-      `I measured both versions in the same session, one after the other: the weak version on ${before}, the fixed one on ${after}, Romanian time.`,
+      `I measured both versions on the same day, from the same computer, with the same tools: the weak version on ${before}, the fixed one on ${after}, Romanian time.`,
+    measuredTwice: "I measured the fixed version twice; I explain why in the limits, at the end.",
     lighthouse:
       "The scores, LCP, CLS, TBT, page weight and delay come from Lighthouse, on a simulated phone. Each one is the median of three runs, the middle value.",
     termsHeading: "A few terms",
@@ -801,6 +811,9 @@ const en: ReportCopy = {
         "I ran no active security tests, meaning attempted attacks, and no tests of the secure connection (TLS), which Cloudflare looks after. I only checked what the site sends and which files anyone can download.",
       notAudited:
         "The pages of this report are not part of the measurements. The link check doesn't enter them either, because the report links to the raw files of the run that was still being made.",
+      measuredTwice: ({ score, firstRun, firstDate, id, sha, run }) =>
+        `I measured the fixed version twice. The first run, ${firstRun}, made on ${firstDate}, Romanian time, right after the weak version's, gave a best practices score of ${score} on every page: since the first fix for ${id}, any address that doesn't exist got a real “page not found” answer, including /favicon.ico, the address of the tab icon, which was still missing, and the browser logged that as an error. The second fix for ${id}, commit ${sha}, added the icon, and the report uses the run made again after it, ${run}.`,
+      measuredTwiceLink: "All the files of the first run, on GitHub",
     },
     psiHeading: "Check the speed yourself",
     psiAbout:

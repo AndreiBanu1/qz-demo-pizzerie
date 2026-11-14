@@ -6,7 +6,7 @@ import { restaurant } from "../../content/restaurant";
 import { pageMeta } from "../../lib/page-meta";
 import { AREAS, areaStatus } from "./area-status";
 import { copy, type Lang } from "./copy";
-import { after, before, findings, num, str } from "./data";
+import { after, before, findings, num, str, supersededAfter } from "./data";
 import FindingCard, { rawUrl } from "./FindingCard";
 import { formatRunDate, formatValue } from "./format";
 import { PAGES, axeTotal } from "./metrics";
@@ -206,6 +206,22 @@ function OwnerSummary({ lang }: { lang: Lang }) {
   );
 }
 
+/**
+ * The earlier run of the fixed site that the report's after run replaced (audit/report-run.json), with the figure and
+ * the finding the limits cite. The figure is read from that run's summary.json; the finding is the one whose last fix
+ * commit is the code the after run measured. Throws rather than print a sentence the data doesn't back.
+ */
+function supersededRun() {
+  const s = supersededAfter;
+  if (!s) return null;
+  const scores = PAGES.map((p) => num(s, `pages.${p}.lighthouse.bestPractices`));
+  if (scores.some((x) => x !== scores[0])) throw new Error(`report: ${s.runId} best practices differs by page (${scores.join(", ")})`);
+  if (!(scores[0] < num(after, `pages.${PAGES[0]}.lighthouse.bestPractices`))) throw new Error(`report: ${s.runId} best practices is not below ${after.runId}`);
+  const fix = findings.find((f) => f.fixCommit !== null && after.version.commit.startsWith(f.fixCommit));
+  if (!fix?.fixCommit || !fix.alsoCommits?.length) throw new Error(`report: no finding has a later fix commit that ${after.runId} measured`);
+  return { s, score: String(scores[0]), id: unbroken(fix.id), sha: fix.fixCommit };
+}
+
 function Method({ lang }: { lang: Lang }) {
   const c = copy[lang];
   const m = c.method;
@@ -215,6 +231,7 @@ function Method({ lang }: { lang: Lang }) {
     { label: m.run.after, word: c.afterWord, s: after },
   ];
   const sameTools = JSON.stringify(before.tools) === JSON.stringify(after.tools);
+  const superseded = supersededRun();
   const toolList = (tools: Record<string, string>) => (
     <ul className="mt-1 list-disc pl-5">
       {Object.entries(tools).map(([name, version]) => (
@@ -285,6 +302,21 @@ function Method({ lang }: { lang: Lang }) {
         <li>{m.limits.hsts}</li>
         <li>{m.limits.activeSecurity}</li>
         <li>{m.limits.notAudited}</li>
+        {superseded && (
+          <li>
+            {m.limits.measuredTwice({
+              score: superseded.score,
+              firstRun: superseded.s.runId,
+              firstDate: formatRunDate(superseded.s.startedAt, c.months),
+              id: superseded.id,
+              sha: superseded.sha,
+              run: after.runId,
+            })}{" "}
+            <a href={`${restaurant.repoUrl}/tree/main/audit/runs/${superseded.s.runId}`} className={`${tapLink} -ml-3`}>
+              {m.limits.measuredTwiceLink}
+            </a>
+          </li>
+        )}
       </ul>
 
       <h3 className={h3}>{m.psiHeading}</h3>
@@ -373,6 +405,7 @@ export default function Report({ lang }: { lang: Lang }) {
             before: formatRunDate(before.startedAt, c.months),
             after: formatRunDate(after.startedAt, c.months),
           })}
+          {supersededAfter && <> {c.scorecard.measuredTwice}</>}
         </p>
         <h3 className="mt-6 text-xl">{c.scorecard.termsHeading}</h3>
         <ul className="mt-2 list-disc space-y-1.5 pl-5">
