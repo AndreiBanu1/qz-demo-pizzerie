@@ -101,6 +101,13 @@ function checkCommon(page, html) {
   if (!decode(root).includes(BANNER)) fail(file, "demo banner text missing");
   if (/[şţŞŢ]/.test(html)) fail(file, "uses cedilla ş/ţ instead of comma-below ș/ț");
 
+  // A favicon, so browsers and Lighthouse don't log a 404 for /favicon.ico on every page.
+  const icons = all(html, /<link\b[^>]*>/gi).map((m) => m[0]).filter((t) => attr(t, "rel") === "icon").map((t) => attr(t, "href"));
+  for (const href of ["/favicon.ico", "/favicon.svg"]) {
+    if (!icons.includes(href)) fail(file, `no <link rel="icon" href="${href}">`);
+    else if (!existsSync(join(DIST, href))) fail(file, `links ${href}, which isn't in ${DIST}`);
+  }
+
   // The strict CSP (public/_headers) blocks style attributes, inline <style> and inline scripts other than JSON-LD.
   if (/<[a-z][^>]*\sstyle=/i.test(html)) fail(file, "has a style attribute, which the CSP blocks");
   if (/<style\b/i.test(html)) fail(file, "has an inline <style>, which the CSP blocks");
