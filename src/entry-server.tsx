@@ -4,6 +4,18 @@ import { StaticRouter } from "react-router";
 import AppRoutes from "./routes";
 import { ORIGIN, pageMeta, type PageId } from "./lib/page-meta";
 import { restaurantJsonLd } from "./lib/structured-data";
+import { loadReport } from "./pages/report/ReportRoute";
+
+/**
+ * Loads the report chunk, so render() can write the report pages, and fails the build when
+ * validateFindings() reports anything about the published findings.
+ */
+export async function prepare(): Promise<void> {
+  await loadReport();
+  const { reportProblems } = await import("./pages/report/data");
+  const problems = reportProblems();
+  if (problems.length) throw new Error(`validateFindings found ${problems.length} problem(s):\n- ${problems.join("\n- ")}`);
+}
 
 export const render = (url: string): string =>
   renderToString(

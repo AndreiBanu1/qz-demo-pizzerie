@@ -3,7 +3,7 @@
 // Each finding points at evidence keys in the report's before summary.json; the
 // published report fails to build when validateFindings() returns anything.
 import type { PageId, Summary } from "./summary-schema";
-import { getEvidence } from "./summarize.mjs";
+import { getEvidence } from "./evidence.mjs";
 
 export type Severity = "critica" | "mare" | "medie" | "mica";
 export type Area = "speed" | "accessibility" | "qa" | "seo" | "security";
@@ -465,13 +465,13 @@ export const findings: Finding[] = [
         title: "Google nu primește datele pizzeriei într-o formă pe care o înțelege direct",
         what: "Pe nicio pagină nu există date structurate, adică un bloc ascuns, într-un format standard, care îi spune direct lui Google numele, adresa, telefonul, programul, meniul și prețurile. Am căutat fiecare informație pe care o aștept pentru un restaurant și lipsesc toate.",
         why: "Fără aceste date, Google trebuie să ghicească programul și adresa din text, iar aici nici textul nu e în pagină. Ratezi șansa ca programul și meniul tău să apară direct în rezultatele căutării.",
-        fix: "Adaug datele structurate pentru restaurant, cu aceleași informații ca pe pagină, și le verific cu instrumentele de verificare de la Google și Schema.org.",
+        fix: "Adaug datele structurate pentru restaurant, cu aceleași informații ca pe pagină, și verific automat că pagina primită, înainte să ruleze programul ei, le conține pe toate. Validatorul Schema.org și testul Rich Results de la Google se pot folosi în plus, ca verificare manuală.",
       },
       en: {
         title: "Google doesn't get the pizzeria's details in a form it understands directly",
         what: "No page has structured data, a hidden block in a standard format that tells Google directly the name, address, phone, hours, menu and prices. I looked for every detail I expect for a restaurant and they are all missing.",
         why: "Without this data Google has to guess the hours and address from the text, and here even the text isn't in the page. You miss the chance for your hours and menu to show up right in the search results.",
-        fix: "I add structured data for the restaurant, with the same details as on the page, and check it with the validation tools from Google and Schema.org.",
+        fix: "I add structured data for the restaurant, with the same details as on the page, and check automatically that the page as first received, before its program runs, contains all of them. The Schema.org validator and Google's Rich Results Test can be used on top, as a manual check.",
       },
     },
   },

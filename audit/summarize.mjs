@@ -283,20 +283,5 @@ export function summarize(dir) {
   return summary;
 }
 
-/**
- * Dot-path lookup ("pages.meniu.lighthouse.lcpMs"). A present null is returned as null;
- * a missing segment, or a segment below a non-object, throws.
- * @param {Summary} summary
- * @param {string} key
- * @returns {unknown}
- */
-export function getEvidence(summary, key) {
-  let cur = /** @type {unknown} */ (summary);
-  for (const seg of key.split(".")) {
-    if (cur === null || typeof cur !== "object" || !Object.hasOwn(cur, seg)) {
-      throw new Error(`unknown evidence key: ${key}`);
-    }
-    cur = /** @type {Record<string, unknown>} */ (cur)[seg];
-  }
-  return cur;
-}
+// getEvidence lives in evidence.mjs, which imports nothing, so the report page can bundle it for the browser.
+export { getEvidence } from "./evidence.mjs";

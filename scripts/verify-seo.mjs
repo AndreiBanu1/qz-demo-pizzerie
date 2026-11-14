@@ -2,9 +2,11 @@
 // Runs at the end of `npm run build`, so a regression fails the deploy.
 // The expectations are written out here on purpose, so this check doesn't trust the code it checks.
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const DIST = "dist";
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ORIGIN = "https://pizza-mita.pages.dev";
 const BANNER = "Site demonstrativ realizat de Quality Zone";
 const MENU_ITEMS = [
@@ -23,6 +25,17 @@ const pages = [
   { file: "meniu.html", path: "/meniu", jsonLd: true, title: "Meniu – Pizza Mița", h1: "Meniu", menu: true },
   { file: "rezervare.html", path: "/rezervare", title: "Rezervă o masă – Pizza Mița", h1: "Rezervă o masă" },
 ];
+
+// The audit report, in Romanian and English. It keeps every site rule (banner, noindex, one H1) and has no structured data.
+const reportPages = [
+  { file: "raport.html", path: "/raport", lang: "ro", title: "Raportul auditului – Pizza Mița", h1: "Raportul auditului" },
+  { file: "raport/en.html", path: "/raport/en", lang: "en", title: "Audit report – Pizza Mița", h1: "Audit report" },
+];
+
+// The after run's Observatory grade, read from its summary.json: the report must show it, which shows its numbers come from the data.
+const reportRun = JSON.parse(readFileSync(join(ROOT, "audit", "report-run.json"), "utf8"));
+const afterSummary = JSON.parse(readFileSync(join(ROOT, "audit", "runs", reportRun.after, "summary.json"), "utf8"));
+const afterGrade = afterSummary.security.observatory.grade;
 
 const failures = [];
 const fail = (file, message) => failures.push(`${file}: ${message}`);
@@ -58,7 +71,8 @@ function checkCommon(page, html) {
   const { file } = page;
   const root = html.slice(html.indexOf('<div id="root">'));
 
-  if (html.match(/<html\b[^>]*\blang="([^"]*)"/)?.[1] !== "ro") fail(file, '<html lang> isn\'t "ro"');
+  const lang = page.lang ?? "ro";
+  if (html.match(/<html\b[^>]*\blang="([^"]*)"/)?.[1] !== lang) fail(file, `<html lang> isn't "${lang}"`);
 
   const titleTags = all(html, /<title>([\s\S]*?)<\/title>/gi);
   if (titleTags.length !== 1) fail(file, `expected 1 <title>, found ${titleTags.length}`);
@@ -86,6 +100,13 @@ function checkCommon(page, html) {
 
   if (!decode(root).includes(BANNER)) fail(file, "demo banner text missing");
   if (/[şţŞŢ]/.test(html)) fail(file, "uses cedilla ş/ţ instead of comma-below ș/ț");
+
+  // The strict CSP (public/_headers) blocks style attributes, inline <style> and inline scripts other than JSON-LD.
+  if (/<[a-z][^>]*\sstyle=/i.test(html)) fail(file, "has a style attribute, which the CSP blocks");
+  if (/<style\b/i.test(html)) fail(file, "has an inline <style>, which the CSP blocks");
+  for (const [tag] of all(html, /<script\b[^>]*>/gi)) {
+    if (!/\ssrc=/.test(tag) && !/type="application\/ld\+json"/.test(tag)) fail(file, `has an inline script the CSP blocks: ${tag}`);
+  }
   return root;
 }
 
@@ -127,6 +148,16 @@ for (const page of pages) {
   if (page.menu) for (const name of MENU_ITEMS) if (!decode(root).includes(name)) fail(file, `menu item "${name}" missing from the HTML`);
 }
 
+for (const page of reportPages) {
+  const html = read(page.file);
+  if (html === null) continue;
+  const root = checkCommon({ ...page, canonical: ORIGIN + page.path }, html);
+  if (/application\/ld\+json/.test(html)) fail(page.file, "has structured data, want none on the report");
+  // As the whole text of an element (a table cell, a figure), not just somewhere in a sentence.
+  const shown = new RegExp(`>\\s*${afterGrade.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*<`);
+  if (!shown.test(decode(root))) fail(page.file, `doesn't show the after run's Observatory grade "${afterGrade}" from ${reportRun.after}/summary.json`);
+}
+
 // The page Cloudflare Pages serves, with a 404 status, for any path that has no file.
 {
   const html = read("404.html");
@@ -144,4 +175,4 @@ if (failures.length) {
   console.error(`SEO checks failed (${failures.length}):\n- ${failures.join("\n- ")}`);
   process.exit(1);
 }
-console.log(`SEO checks OK (${pages.length + 1} files)`);
+console.log(`SEO checks OK (${pages.length + reportPages.length + 1} files)`);

@@ -11,6 +11,8 @@ export type Restaurant = {
   priceRange: string;
   timeZone: "Europe/Bucharest";
   hours: Record<Day, DayHours>;
+  /** The public repository: the code, the audit runs and every fix commit. */
+  repoUrl: string;
 };
 
 export const restaurant: Restaurant = {
@@ -31,4 +33,5 @@ export const restaurant: Restaurant = {
     5: { open: "11:00", close: "23:00" },
     6: { open: "11:00", close: "23:00" },
   },
+  repoUrl: "https://github.com/AndreiBanu1/qz-demo-pizzerie",
 };

@@ -8,16 +8,25 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const ssrDir = join(root, "dist-ssr");
 
-const { render, renderHead, pageMeta } = await import(pathToFileURL(join(ssrDir, "entry-server.js")).href);
+const { render, renderHead, pageMeta, prepare } = await import(pathToFileURL(join(ssrDir, "entry-server.js")).href);
+
+// Loads the report and stops the build if its findings don't validate against the report runs.
+await prepare();
 
 const template = readFileSync(join(dist, "index.html"), "utf8");
 const HEAD = /<!--seo-head-->[\s\S]*?<!--\/seo-head-->/;
 const APP = "<!--app-->";
 if (!HEAD.test(template)) throw new Error("index.html is missing the <!--seo-head--> … <!--/seo-head--> block");
 if (!template.includes(APP)) throw new Error("index.html is missing <!--app--> inside #root");
+const HTML_LANG = '<html lang="ro">';
+if (!template.includes(HTML_LANG)) throw new Error(`index.html is missing ${HTML_LANG}`);
 
+// Each page gets its own <html lang>: Romanian everywhere except the English report page.
 const pageHtml = (id, url) =>
-  template.replace(HEAD, () => renderHead(id)).replace(APP, () => render(url));
+  template
+    .replace(HTML_LANG, () => `<html lang="${pageMeta[id].lang}">`)
+    .replace(HEAD, () => renderHead(id))
+    .replace(APP, () => render(url));
 
 const write = (file, content) => {
   mkdirSync(dirname(join(dist, file)), { recursive: true });
@@ -25,7 +34,7 @@ const write = (file, content) => {
   console.log(`prerendered ${file}`);
 };
 
-for (const id of ["acasa", "meniu", "rezervare"]) {
+for (const id of ["acasa", "meniu", "rezervare", "raport", "raport-en"]) {
   const { path } = pageMeta[id];
   write(path === "/" ? "index.html" : `${path.slice(1)}.html`, pageHtml(id, path));
 }

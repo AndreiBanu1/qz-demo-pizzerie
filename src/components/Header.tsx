@@ -7,9 +7,9 @@ const navLink = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-ink text-cream" : "text-ink hover:bg-ink/5"
   }`;
 
-export default function Header() {
+export default function Header({ lang }: { lang?: "ro" }) {
   return (
-    <header className="bg-cream">
+    <header lang={lang} className="bg-cream">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
         <Link to="/" className="flex items-center gap-2.5 rounded-lg">
           <CatLogo />

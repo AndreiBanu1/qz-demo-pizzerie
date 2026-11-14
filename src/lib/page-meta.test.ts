@@ -22,6 +22,10 @@ describe("pageMeta", () => {
     expect(new Set(descriptions).size).toBe(descriptions.length);
   });
 
+  it("marks the English report page as English and every other page as Romanian", () => {
+    for (const [id, m] of entries) expect(m.lang, id).toBe(id === "raport-en" ? "en" : "ro");
+  });
+
   it("uses comma-below letters, never the cedilla forms", () => {
     for (const [, m] of entries) expect(`${m.title}${m.description}`).not.toMatch(/[şţŞŢ]/);
   });
@@ -35,5 +39,9 @@ describe("pageIdForPath", () => {
     expect(pageIdForPath("/rezervare")).toBe("rezervare");
     expect(pageIdForPath("/nu-exista")).toBe("404");
     expect(pageIdForPath("/menu")).toBe("404");
+    expect(pageIdForPath("/raport")).toBe("raport");
+    expect(pageIdForPath("/raport/")).toBe("raport");
+    expect(pageIdForPath("/raport/en")).toBe("raport-en");
+    expect(pageIdForPath("/raport/fr")).toBe("404");
   });
 });
