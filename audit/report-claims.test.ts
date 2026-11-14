@@ -41,9 +41,12 @@ describe("the scorecard notes are true for the after run's raw Lighthouse files"
         expect(failing(lhr(reportRun.after, page, n), "seo")).toEqual(["is-crawlable"]);
       });
 
-      it(`${page} run ${n}: best practices loses points only on a console error for the missing favicon`, () => {
+      // The scorecard's favicon note shows only while the after score is below the before score.
+      it(`${page} run ${n}: best practices loses no points, or only on a console error for the missing favicon`, () => {
         const l = lhr(reportRun.after, page, n);
-        expect(failing(l, "best-practices")).toEqual(["errors-in-console"]);
+        const lost = failing(l, "best-practices");
+        if (lost.length === 0) return;
+        expect(lost).toEqual(["errors-in-console"]);
         const urls = (l.audits["errors-in-console"].details?.items ?? []).map((i) => i.sourceLocation?.url ?? "");
         expect(urls.length).toBeGreaterThan(0);
         for (const url of urls) expect(new URL(url).pathname).toBe("/favicon.ico");

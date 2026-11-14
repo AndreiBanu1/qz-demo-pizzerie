@@ -1,0 +1,21 @@
+{
+  "runId": "2026-11-14-after-2",
+  "target": "after",
+  "url": "https://pizza-mita.pages.dev",
+  "startedAt": "2026-11-14T15:34:40.501Z",
+  "finishedAt": "2026-11-14T15:35:51.791Z",
+  "version": {
+    "commit": "d4b55c7e9b75a9eb2d03b517f9fcc4e9160b7036",
+    "branch": "main",
+    "builtAt": "2026-11-14T15:32:07.428Z"
+  },
+  "tools": {
+    "lighthouse": "13.6.0",
+    "@playwright/test": "1.64.1",
+    "@axe-core/playwright": "4.14.0",
+    "linkinator": "8.1.0",
+    "node-html-parser": "9.0.7"
+  },
+  "node": "v26.10.0",
+  "machine": "Darwin arm64 Apple M2 Pro"
+}

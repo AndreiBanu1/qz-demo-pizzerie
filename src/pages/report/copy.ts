@@ -491,7 +491,8 @@ const ro: ReportCopy = {
         "N-am evaluat HSTS, instrucțiunea care obligă browserul să intre pe site doar prin conexiune securizată: adresele pages.dev sunt deja pe lista browserelor cu site-uri accesibile doar securizat.",
       activeSecurity:
         "N-am făcut teste de securitate active, adică încercări de atac, și nici teste ale conexiunii securizate (TLS), de care se ocupă Cloudflare. Am verificat doar ce trimite site-ul și ce fișiere poate descărca oricine.",
-      notAudited: "Paginile acestui raport nu fac parte din măsurători.",
+      notAudited:
+        "Paginile acestui raport nu fac parte din măsurători. Nici verificarea linkurilor nu intră în ele, pentru că raportul trimite la fișierele brute ale măsurătorii care încă se făcea.",
     },
     psiHeading: "Verifică singur viteza",
     psiAbout:
@@ -794,7 +795,8 @@ const en: ReportCopy = {
         "I didn't assess HSTS, the instruction that makes the browser visit the site only over a secure connection: pages.dev addresses are already on the browsers' list of sites that only open securely.",
       activeSecurity:
         "I ran no active security tests, meaning attempted attacks, and no tests of the secure connection (TLS), which Cloudflare looks after. I only checked what the site sends and which files anyone can download.",
-      notAudited: "The pages of this report are not part of the measurements.",
+      notAudited:
+        "The pages of this report are not part of the measurements. The link check doesn't enter them either, because the report links to the raw files of the run that was still being made.",
     },
     psiHeading: "Check the speed yourself",
     psiAbout:

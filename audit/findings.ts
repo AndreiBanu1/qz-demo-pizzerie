@@ -575,7 +575,8 @@ export const findings: Finding[] = [
     evidenceFiles: ["playwright.json.gz", "exposure.json.gz"],
     screenshots: [shot("not-found-an-unknown-addre-3c449-404-and-offers-the-way-home-desktop")],
     status: "fixed",
-    fixCommit: "2ac9cf1",
+    fixCommit: "d4b55c7",
+    alsoCommits: ["2ac9cf1"],
     wontFix: null,
     text: {
       ro: {
