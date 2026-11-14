@@ -12,7 +12,7 @@ Pizza Mița is not a real business:
 
 Both are hosted on Cloudflare Pages:
 
-- https://pizza-mita-inainte.pages.dev is the weak "before" version (the `before` branch, frozen since the audit; it moved once, for the hosting change to Cloudflare Pages).
+- https://pizza-mita-inainte.pages.dev is the weak "before" version (the `before` branch). It moved once, for the hosting change to Cloudflare Pages, before the first audit run. Since then it has stayed at the audited commit, 1b68d35 (tag `before-v2`).
 - https://pizza-mita.pages.dev is the fixed version (this branch, `main`).
 
 ## The report
@@ -23,7 +23,7 @@ The audit report is part of the fixed site, in Romanian and in English:
 - `/raport/en` (https://pizza-mita.pages.dev/raport/en)
 - the same report as PDFs: `public/raport/pizza-mita-audit-ro.pdf` and `public/raport/pizza-mita-audit-en.pdf`, served at `/raport/pizza-mita-audit-ro.pdf` and `/raport/pizza-mita-audit-en.pdf`
 
-Every figure in the report comes from the raw files of the two audit runs. Those files are published with the site under `/raport/date/<run>/`, and they are also in `audit/runs/` in this repository. Which two runs the report uses is set in `audit/report-run.json`.
+Every figure in the report comes from the raw files of the two audit runs. Those files are published with the site under `/raport/date/<run>/`, and they are also in `audit/runs/` in this repository. Which two runs the report uses is set in `audit/report-run.json`, together with the earlier run of the fixed site that the second one replaced, which the report's limits explain.
 
 ## Fix history
 
@@ -39,7 +39,18 @@ npm run audit -- both     # audit both, one after the other
 
 Before you start: both sites must be live (the audit measures the Cloudflare Pages addresses above), and the browsers must be installed once with `npx playwright install`.
 
-A run measures speed (Lighthouse), accessibility (axe), security headers (Mozilla Observatory), SEO checks on the HTML and a set of Playwright tests, and writes everything to `audit/runs/<date>-<before|after>/`. A second run on the same day gets a `-2` suffix (then `-3`, and so on), so it never overwrites the first. To have the report use a new run, set its folder name in `audit/report-run.json`. See `audit/manual-template.md` for the manual checks that no tool can do.
+A run does all of this, in order, and writes everything to `audit/runs/<date>-<before|after>/`:
+
+- Playwright tests on three devices, with axe checking accessibility on every page
+- Lighthouse, three runs per page, of which the report shows the median
+- SEO checks on the HTML as it arrives, before any JavaScript runs
+- linkinator, which follows the links from the home page and reports broken ones
+- the security headers each page sends
+- Mozilla HTTP Observatory, the public online security test
+- a check for files that shouldn't be downloadable: source maps, `/.git/config` and `/.env`
+- `npm audit`, for known security problems in the dependencies
+
+A second run on the same day gets a `-2` suffix (then `-3`, and so on), so it never overwrites the first. To have the report use a new run, set its folder name in `audit/report-run.json`. See `audit/manual-template.md` for the manual checks that no tool can do.
 
 ## Commands
 
