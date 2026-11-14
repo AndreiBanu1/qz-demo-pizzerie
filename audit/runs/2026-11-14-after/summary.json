@@ -1,0 +1,208 @@
+{
+  "runId": "2026-11-14-after",
+  "target": "after",
+  "url": "https://pizza-mita.pages.dev",
+  "startedAt": "2026-11-14T05:56:38.269Z",
+  "version": {
+    "commit": "bcb0a0fd19aebec0bff37bcb5a26fef0d4705d8b",
+    "branch": "main",
+    "builtAt": "2026-11-14T05:52:10.762Z"
+  },
+  "tools": {
+    "lighthouse": "13.6.0",
+    "@playwright/test": "1.64.1",
+    "@axe-core/playwright": "4.14.0",
+    "linkinator": "8.1.0",
+    "node-html-parser": "9.0.7"
+  },
+  "pages": {
+    "acasa": {
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "seo": 69,
+        "bestPractices": 96,
+        "lcpMs": 1504.8339999999998,
+        "cls": 0,
+        "tbtMs": 4,
+        "bytes": 143405,
+        "renderBlockingMs": 0
+      },
+      "axe": {
+        "violations": 0,
+        "rules": []
+      },
+      "seo": {
+        "title": "Pizza Mița – pizzerie în Orașul Demo (site demonstrativ)",
+        "description": "Pizza la cuptor și paste pe Strada Exemplului 0, în Orașul Demo. Vezi programul și meniul, apoi rezervă o masă. Site demonstrativ.",
+        "h1Count": 1,
+        "lang": "ro",
+        "canonical": "https://pizza-mita.pages.dev/",
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [
+            "Restaurant"
+          ],
+          "fields": [
+            "name",
+            "url",
+            "address",
+            "telephone",
+            "openingHoursSpecification",
+            "servesCuisine",
+            "priceRange",
+            "hasMenu",
+            "image"
+          ],
+          "parseErrors": 0
+        },
+        "words": 124,
+        "restaurantFieldsMissing": []
+      },
+      "headers": {
+        "content-security-policy": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-hashes' 'sha256-3oFxofzq3N//6J8H86e9ul4WT2OkJrtonB66gn/TLJw='; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": true
+      }
+    },
+    "meniu": {
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "seo": 69,
+        "bestPractices": 96,
+        "lcpMs": 783.608,
+        "cls": 0,
+        "tbtMs": 0,
+        "bytes": 170192,
+        "renderBlockingMs": 0
+      },
+      "axe": {
+        "violations": 0,
+        "rules": []
+      },
+      "seo": {
+        "title": "Meniu – Pizza Mița",
+        "description": "Meniul Pizza Mița: șase pizza, două feluri de paste, deserturi și băuturi, cu prețuri în lei. Site demonstrativ, fără comenzi reale.",
+        "h1Count": 1,
+        "lang": "ro",
+        "canonical": "https://pizza-mita.pages.dev/meniu",
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [
+            "Restaurant"
+          ],
+          "fields": [
+            "name",
+            "url",
+            "address",
+            "telephone",
+            "openingHoursSpecification",
+            "servesCuisine",
+            "priceRange",
+            "hasMenu",
+            "image"
+          ],
+          "parseErrors": 0
+        },
+        "words": 213,
+        "restaurantFieldsMissing": []
+      },
+      "headers": {
+        "content-security-policy": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-hashes' 'sha256-3oFxofzq3N//6J8H86e9ul4WT2OkJrtonB66gn/TLJw='; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": true
+      }
+    },
+    "rezervare": {
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "seo": 69,
+        "bestPractices": 96,
+        "lcpMs": 784.892,
+        "cls": 0,
+        "tbtMs": 0,
+        "bytes": 119888,
+        "renderBlockingMs": 0
+      },
+      "axe": {
+        "violations": 0,
+        "rules": []
+      },
+      "seo": {
+        "title": "Rezervă o masă – Pizza Mița",
+        "description": "Rezervă o masă la Pizza Mița: spune-ne numele, ziua, ora și câte persoane sunteți. Site demonstrativ, nu se trimite nimic.",
+        "h1Count": 1,
+        "lang": "ro",
+        "canonical": "https://pizza-mita.pages.dev/rezervare",
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [],
+          "fields": [],
+          "parseErrors": 0
+        },
+        "words": 106,
+        "restaurantFieldsMissing": [
+          "name",
+          "url",
+          "address",
+          "telephone",
+          "openingHoursSpecification",
+          "servesCuisine",
+          "priceRange",
+          "hasMenu",
+          "image"
+        ]
+      },
+      "headers": {
+        "content-security-policy": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-hashes' 'sha256-3oFxofzq3N//6J8H86e9ul4WT2OkJrtonB66gn/TLJw='; script-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": true
+      }
+    }
+  },
+  "qa": {
+    "total": 80,
+    "passed": 80,
+    "failed": 0,
+    "skipped": 0,
+    "failures": []
+  },
+  "security": {
+    "observatory": {
+      "grade": "A+",
+      "score": 120
+    },
+    "headersPresent": 5,
+    "exposed": [],
+    "npmAudit": {
+      "critical": 0,
+      "high": 0,
+      "moderate": 0,
+      "low": 0
+    }
+  },
+  "links": {
+    "checked": 62,
+    "broken": []
+  }
+}

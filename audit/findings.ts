@@ -1,11 +1,14 @@
-// The audit findings, hand-written after the first run of the weak site.
-// Each finding points at evidence keys in that run's summary.json; the published
-// report fails to build when validateFindings() returns anything.
+// The audit findings, hand-written after the first run of the weak site and
+// completed with the fixes and the same-session comparison run (audit/report-run.json).
+// Each finding points at evidence keys in the report's before summary.json; the
+// published report fails to build when validateFindings() returns anything.
 import type { PageId, Summary } from "./summary-schema";
 import { getEvidence } from "./summarize.mjs";
 
 export type Severity = "critica" | "mare" | "medie" | "mica";
 export type Area = "speed" | "accessibility" | "qa" | "seo" | "security";
+
+export type Status = "fixed" | "partly" | "not-fixed" | "wont-fix";
 
 type Copy = { title: string; what: string; why: string; fix: string };
 
@@ -20,14 +23,19 @@ export type Finding = {
   /** Raw file names in the run dir, e.g. "lighthouse-meniu-2.json.gz". */
   evidenceFiles: string[];
   screenshots: string[];
-  /** Filled in Phase C. */
+  /** Decided by comparing the evidence in the before and after summaries. */
+  status: Status;
+  /** The commit that completes the fix (7 characters); null for a won't-fix. */
   fixCommit: string | null;
+  /** Earlier commits that were part of the same fix. */
+  alsoCommits?: string[];
   wontFix: { ro: string; en: string } | null;
   text: { ro: Copy; en: Copy };
 };
 
-// Evidence from the first run, audit/runs/2026-11-12-before. qa.failures.N indexes
-// that run's summary.json; the test in findings.test.ts pins each one to its title.
+// Evidence from the report's before run, audit/runs/2026-11-14-before. qa.failures.N
+// and security.exposed.N index that run's summary.json; the test in findings.test.ts
+// pins each one to its title. In the after summary they are matched by identity.
 const LIGHTHOUSE_ALL = ["acasa", "meniu", "rezervare"].flatMap((p) => [1, 2, 3].map((n) => `lighthouse-${p}-${n}.json.gz`));
 const AXE_ALL = ["acasa", "meniu", "rezervare"].flatMap((p) =>
   ["desktop", "iphone-15", "pixel-7"].map((d) => `axe-${p}-${d}.json.gz`),
@@ -47,7 +55,8 @@ export const findings: Finding[] = [
       shot("no-sideways-scroll-rezerva-382ba-ge-does-not-scroll-sideways-iphone-15"),
       shot("no-sideways-scroll-rezerva-382ba-ge-does-not-scroll-sideways-pixel-7"),
     ],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "29052df",
     wontFix: null,
     text: {
       ro: {
@@ -76,7 +85,8 @@ export const findings: Finding[] = [
       shot("call-the-call-control-is-a-tel-link-iphone-15"),
       shot("keyboard-Tab-reaches-the-c-e813b-e-page-with-a-visible-focus-desktop"),
     ],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "f9d1662",
     wontFix: null,
     text: {
       ro: {
@@ -110,7 +120,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["seo-html.json.gz", "links.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "1c4e456",
     wontFix: null,
     text: {
       ro: {
@@ -142,7 +153,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: LIGHTHOUSE_ALL.filter((f) => !f.includes("rezervare")),
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "4dbedc2",
     wontFix: null,
     text: {
       ro: {
@@ -178,7 +190,8 @@ export const findings: Finding[] = [
       shot("opening-status-at-2026-11--ce814--Deschis-acum-până-la-22-00-desktop"),
       shot("opening-status-at-2026-11--14e31-is-deschidem-mâine-la-11-00-desktop"),
     ],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "cdf8567",
     wontFix: null,
     text: {
       ro: {
@@ -212,7 +225,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["seo-html.json.gz", ...LIGHTHOUSE_ALL],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "230765b",
     wontFix: null,
     text: {
       ro: {
@@ -245,6 +259,7 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["headers.json.gz", "seo-html.json.gz", ...LIGHTHOUSE_ALL],
     screenshots: [],
+    status: "wont-fix",
     fixCommit: null,
     wontFix: {
       ro: "Intenționat: acesta e un site demonstrativ și nu trebuie să apară în Google. Pe un site real, ar ascunde site-ul din Google, așa că aș scoate aceste semnale înainte de lansare.",
@@ -274,7 +289,8 @@ export const findings: Finding[] = [
     evidence: ["pages.meniu.axe.rules", "pages.meniu.lighthouse.accessibility", "qa.failures.1", "qa.failures.4", "qa.failures.7"],
     evidenceFiles: ["axe-meniu-desktop.json.gz", "axe-meniu-iphone-15.json.gz", "axe-meniu-pixel-7.json.gz"],
     screenshots: [shot("axe-meniu-no-accessibility-violations-iphone-15")],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "240e15f",
     wontFix: null,
     text: {
       ro: {
@@ -307,7 +323,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["playwright.json.gz"],
     screenshots: [shot("reservation-every-field-has-a-label-iphone-15")],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "1764670",
     wontFix: null,
     text: {
       ro: {
@@ -340,7 +357,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: [...AXE_ALL, ...LIGHTHOUSE_ALL],
     screenshots: [shot("axe-acasa-no-accessibility-violations-iphone-15")],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "fc075ab",
     wontFix: null,
     text: {
       ro: {
@@ -376,7 +394,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["playwright.json.gz"],
     screenshots: [shot("links-meniu-every-internal-link-leads-to-a-real-page-desktop")],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "6e5d978",
     wontFix: null,
     text: {
       ro: {
@@ -406,18 +425,19 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: LIGHTHOUSE_ALL,
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "bd762f8",
     wontFix: null,
     text: {
       ro: {
         title: "Fontul titlurilor ține pagina pe loc până se descarcă",
-        what: "Fontul titlurilor vine de la Google Fonts cu toate grosimile și variantele înclinate, deși site-ul folosește doar câteva. Browserul așteaptă să-l descarce înainte să arate ceva pe ecran. Pe un telefon simulat, testul de viteză estimează că, fără fișierele care țin pagina pe loc, fiecare pagină ar apărea cu 830 până la 846 de milisecunde mai devreme, adică aproape o secundă. Fontul e cel mai lent dintre aceste fișiere.",
+        what: "Fontul titlurilor vine de la Google Fonts cu toate grosimile și variantele înclinate, deși site-ul folosește doar câteva. Browserul așteaptă să-l descarce înainte să arate ceva pe ecran. Pe un telefon simulat, testul de viteză estimează că, fără fișierele care țin pagina pe loc, fiecare pagină ar apărea cu 814 până la 835 de milisecunde mai devreme, adică aproape o secundă. Fontul e cel mai lent dintre aceste fișiere.",
         why: "Fiecare clipă de ecran gol face site-ul să pară lent, mai ales pe telefon, cu semnal slab.",
         fix: "Găzduiesc fontul pe același server cu site-ul, doar cu grosimile folosite, și las textul să apară imediat, urmând ca fontul să se aplice când e gata.",
       },
       en: {
         title: "The heading font holds the page back until it downloads",
-        what: "The heading font comes from Google Fonts with every weight and italic variant, although the site uses only a few. The browser waits to download it before showing anything on screen. On a simulated phone, the speed test estimates that without the files holding the page back, each page would appear 830 to 846 milliseconds sooner, almost a second. The font is the slowest of those files.",
+        what: "The heading font comes from Google Fonts with every weight and italic variant, although the site uses only a few. The browser waits to download it before showing anything on screen. On a simulated phone, the speed test estimates that without the files holding the page back, each page would appear 814 to 835 milliseconds sooner, almost a second. The font is the slowest of those files.",
         why: "Every moment of blank screen makes the site feel slow, especially on a phone with a weak signal.",
         fix: "I host the font on the same server as the site, with only the weights in use, and let the text appear straight away, with the font applied once it's ready.",
       },
@@ -437,7 +457,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["seo-html.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "e2a4b02",
     wontFix: null,
     text: {
       ro: {
@@ -463,7 +484,8 @@ export const findings: Finding[] = [
     evidence: ["pages.acasa.seo.lang", "pages.meniu.seo.lang", "pages.rezervare.seo.lang"],
     evidenceFiles: ["seo-html.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "dc0873c",
     wontFix: null,
     text: {
       ro: {
@@ -497,7 +519,9 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["observatory.json.gz", "headers.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "bcb0a0f",
+    alsoCommits: ["a32b3db"],
     wontFix: null,
     text: {
       ro: {
@@ -523,7 +547,8 @@ export const findings: Finding[] = [
     evidence: ["security.exposed.0.path", "security.exposed.0.status"],
     evidenceFiles: ["exposure.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "f283a36",
     wontFix: null,
     text: {
       ro: {
@@ -549,7 +574,8 @@ export const findings: Finding[] = [
     evidence: ["qa.failures.23", "qa.failures.24", "qa.failures.25"],
     evidenceFiles: ["playwright.json.gz", "exposure.json.gz"],
     screenshots: [shot("not-found-an-unknown-addre-3c449-404-and-offers-the-way-home-desktop")],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "2ac9cf1",
     wontFix: null,
     text: {
       ro: {
@@ -580,7 +606,8 @@ export const findings: Finding[] = [
     ],
     evidenceFiles: ["npm-audit.json.gz"],
     screenshots: [],
-    fixCommit: null,
+    status: "fixed",
+    fixCommit: "d6e2aa9",
     wontFix: null,
     text: {
       ro: {
@@ -600,12 +627,47 @@ export const findings: Finding[] = [
 ];
 
 const SEVERITIES: readonly string[] = ["critica", "mare", "medie", "mica"];
+const STATUSES: readonly string[] = ["fixed", "partly", "not-fixed", "wont-fix"];
 const ID_PATTERN = /^F-\d{2}$/;
 const CEDILLA = /[şţŞŢ]/;
 const COPY_FIELDS = ["title", "what", "why", "fix"] as const;
+/** Keys that index into a list; they only resolve in the before summary and are matched by identity in the after one. */
+const INDEX_KEY = /^(qa\.failures|security\.exposed)\.(\d+)(?:\.[A-Za-z]+)?$/;
 
-/** Returns one message per problem, each containing the finding id. [] means valid. */
-export function validateFindings(findings: Finding[], before: Summary, planted: { id: string }[]): string[] {
+export function isIndexKey(key: string): boolean {
+  return INDEX_KEY.test(key);
+}
+
+/** The identity of the list item an index key points at: title + project for a QA failure, path for an exposure. null when it can't be resolved. */
+export function indexIdentity(summary: Summary, key: string): string | null {
+  const m = INDEX_KEY.exec(key);
+  if (!m) return null;
+  let item: unknown;
+  try {
+    item = getEvidence(summary, `${m[1]}.${m[2]}`);
+  } catch {
+    return null;
+  }
+  const rec = item as Record<string, unknown> | null;
+  if (m[1] === "qa.failures") {
+    return typeof rec?.title === "string" && typeof rec?.project === "string" ? `${rec.title} @ ${rec.project}` : null;
+  }
+  return typeof rec?.path === "string" ? rec.path : null;
+}
+
+/** True when the item an index key points at in `before` is still listed in `after` (the problem is still there). */
+export function stillPresentInAfter(before: Summary, after: Summary, key: string): boolean {
+  const identity = indexIdentity(before, key);
+  if (identity === null) return false;
+  if (key.startsWith("qa.failures.")) return after.qa.failures.some((f) => `${f.title} @ ${f.project}` === identity);
+  return after.security.exposed.some((e) => e.path === identity);
+}
+
+/**
+ * Returns one message per problem, each containing the finding id. [] means valid.
+ * With `after`, scalar evidence keys must also resolve in the after summary (index keys are matched by identity instead).
+ */
+export function validateFindings(findings: Finding[], before: Summary, planted: { id: string }[], after?: Summary): string[] {
   const out: string[] = [];
   const plantedIds = new Set(planted.map((p) => p.id));
   const seen = new Set<string>();
@@ -617,13 +679,30 @@ export function validateFindings(findings: Finding[], before: Summary, planted: 
     seen.add(id);
 
     if (!SEVERITIES.includes(f.severity)) out.push(`${id}: invalid severity "${f.severity}"`);
+    if (!STATUSES.includes(f.status)) out.push(`${id}: invalid status "${f.status}"`);
+    if (f.status === "wont-fix" && f.wontFix === null) out.push(`${id}: status wont-fix needs a wontFix explanation`);
+    if (f.wontFix !== null && f.status !== "wont-fix") out.push(`${id}: has a wontFix explanation but status is "${f.status}"`);
+
+    // R9: a fix commit, or an explicit won't-fix, or an honest "not-fixed".
+    if (f.fixCommit === null && f.wontFix === null && f.status !== "not-fixed") {
+      out.push(`${id}: no fixCommit and no wontFix (status must be "not-fixed" to leave it open)`);
+    }
 
     if (f.evidence.length === 0) out.push(`${id}: no evidence (at least one key is required)`);
     for (const key of f.evidence) {
-      try {
-        getEvidence(before, key);
-      } catch (e) {
-        out.push(`${id}: unknown evidence key ${key} (${e instanceof Error ? e.message : String(e)})`);
+      if (isIndexKey(key)) {
+        if (indexIdentity(before, key) === null) {
+          out.push(`${id}: index key ${key} cannot be resolved to a title/project or path in the before summary`);
+        }
+        continue;
+      }
+      for (const [label, summary] of [["", before], [" in the after summary", after]] as const) {
+        if (!summary) continue;
+        try {
+          getEvidence(summary, key);
+        } catch (e) {
+          out.push(`${id}: ${e instanceof Error ? e.message : String(e)}${label}`);
+        }
       }
     }
 
@@ -644,6 +723,9 @@ export function validateFindings(findings: Finding[], before: Summary, planted: 
     if (f.wontFix !== null) {
       for (const lang of ["ro", "en"] as const) {
         if (f.wontFix[lang].trim() === "") out.push(`${id}: wontFix.${lang} is empty`);
+      }
+      if (CEDILLA.test(f.wontFix.ro)) {
+        out.push(`${id}: wontFix.ro uses cedilla diacritics (ş/ţ); use comma-below (ș/ț)`);
       }
     }
   }

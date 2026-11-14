@@ -1,0 +1,397 @@
+{
+  "runId": "2026-11-14-before",
+  "target": "before",
+  "url": "https://pizza-mita-inainte.pages.dev",
+  "startedAt": "2026-11-14T05:54:31.883Z",
+  "version": {
+    "commit": "1b68d358ec7b383f6920fdef5862f58b4da3d6f9",
+    "branch": "before",
+    "builtAt": "2026-11-12T07:19:00.551Z"
+  },
+  "tools": {
+    "lighthouse": "13.6.0",
+    "@playwright/test": "1.64.1",
+    "@axe-core/playwright": "4.14.0",
+    "linkinator": "8.1.0",
+    "node-html-parser": "9.0.7"
+  },
+  "pages": {
+    "acasa": {
+      "lighthouse": {
+        "performance": 71,
+        "accessibility": 94,
+        "seo": 50,
+        "bestPractices": 100,
+        "lcpMs": 15010.0925,
+        "cls": 0.11423952872596208,
+        "tbtMs": 0,
+        "bytes": 2742201,
+        "renderBlockingMs": 828
+      },
+      "axe": {
+        "violations": 3,
+        "rules": [
+          "image-alt"
+        ]
+      },
+      "seo": {
+        "title": "Home",
+        "description": null,
+        "h1Count": 0,
+        "lang": "en",
+        "canonical": null,
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [],
+          "fields": [],
+          "parseErrors": 0
+        },
+        "words": 0,
+        "restaurantFieldsMissing": [
+          "name",
+          "url",
+          "address",
+          "telephone",
+          "openingHoursSpecification",
+          "servesCuisine",
+          "priceRange",
+          "hasMenu",
+          "image"
+        ]
+      },
+      "headers": {
+        "content-security-policy": null,
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": null,
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": null,
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": false
+      }
+    },
+    "meniu": {
+      "lighthouse": {
+        "performance": 99,
+        "accessibility": 88,
+        "seo": 50,
+        "bestPractices": 100,
+        "lcpMs": 1580.3,
+        "cls": 0,
+        "tbtMs": 0,
+        "bytes": 23019227,
+        "renderBlockingMs": 814
+      },
+      "axe": {
+        "violations": 6,
+        "rules": [
+          "color-contrast",
+          "image-alt"
+        ]
+      },
+      "seo": {
+        "title": "Home",
+        "description": null,
+        "h1Count": 0,
+        "lang": "en",
+        "canonical": null,
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [],
+          "fields": [],
+          "parseErrors": 0
+        },
+        "words": 0,
+        "restaurantFieldsMissing": [
+          "name",
+          "url",
+          "address",
+          "telephone",
+          "openingHoursSpecification",
+          "servesCuisine",
+          "priceRange",
+          "hasMenu",
+          "image"
+        ]
+      },
+      "headers": {
+        "content-security-policy": null,
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": null,
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": null,
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": false
+      }
+    },
+    "rezervare": {
+      "lighthouse": {
+        "performance": 99,
+        "accessibility": 94,
+        "seo": 50,
+        "bestPractices": 100,
+        "lcpMs": 1593.0030000000002,
+        "cls": 0,
+        "tbtMs": 0,
+        "bytes": 146151,
+        "renderBlockingMs": 835
+      },
+      "axe": {
+        "violations": 3,
+        "rules": [
+          "image-alt"
+        ]
+      },
+      "seo": {
+        "title": "Home",
+        "description": null,
+        "h1Count": 0,
+        "lang": "en",
+        "canonical": null,
+        "robots": "noindex",
+        "jsonLd": {
+          "types": [],
+          "fields": [],
+          "parseErrors": 0
+        },
+        "words": 0,
+        "restaurantFieldsMissing": [
+          "name",
+          "url",
+          "address",
+          "telephone",
+          "openingHoursSpecification",
+          "servesCuisine",
+          "priceRange",
+          "hasMenu",
+          "image"
+        ]
+      },
+      "headers": {
+        "content-security-policy": null,
+        "strict-transport-security": null,
+        "x-content-type-options": "nosniff",
+        "x-frame-options": null,
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": null,
+        "x-robots-tag": "noindex",
+        "access-control-allow-origin": "*",
+        "frameAncestors": false
+      }
+    }
+  },
+  "qa": {
+    "total": 80,
+    "passed": 35,
+    "failed": 45,
+    "skipped": 0,
+    "failures": [
+      {
+        "title": "axe.spec.ts › acasa: no accessibility violations",
+        "project": "iphone-15"
+      },
+      {
+        "title": "axe.spec.ts › meniu: no accessibility violations",
+        "project": "iphone-15"
+      },
+      {
+        "title": "axe.spec.ts › rezervare: no accessibility violations",
+        "project": "iphone-15"
+      },
+      {
+        "title": "axe.spec.ts › acasa: no accessibility violations",
+        "project": "pixel-7"
+      },
+      {
+        "title": "axe.spec.ts › meniu: no accessibility violations",
+        "project": "pixel-7"
+      },
+      {
+        "title": "axe.spec.ts › rezervare: no accessibility violations",
+        "project": "pixel-7"
+      },
+      {
+        "title": "axe.spec.ts › acasa: no accessibility violations",
+        "project": "desktop"
+      },
+      {
+        "title": "axe.spec.ts › meniu: no accessibility violations",
+        "project": "desktop"
+      },
+      {
+        "title": "axe.spec.ts › rezervare: no accessibility violations",
+        "project": "desktop"
+      },
+      {
+        "title": "call.spec.ts › the call control is a tel: link",
+        "project": "iphone-15"
+      },
+      {
+        "title": "call.spec.ts › the call control is a tel: link",
+        "project": "pixel-7"
+      },
+      {
+        "title": "call.spec.ts › the call control is a tel: link",
+        "project": "desktop"
+      },
+      {
+        "title": "links.spec.ts › acasa: every internal link leads to a real page",
+        "project": "iphone-15"
+      },
+      {
+        "title": "links.spec.ts › meniu: every internal link leads to a real page",
+        "project": "iphone-15"
+      },
+      {
+        "title": "links.spec.ts › rezervare: every internal link leads to a real page",
+        "project": "iphone-15"
+      },
+      {
+        "title": "links.spec.ts › acasa: every internal link leads to a real page",
+        "project": "pixel-7"
+      },
+      {
+        "title": "links.spec.ts › meniu: every internal link leads to a real page",
+        "project": "pixel-7"
+      },
+      {
+        "title": "links.spec.ts › rezervare: every internal link leads to a real page",
+        "project": "pixel-7"
+      },
+      {
+        "title": "links.spec.ts › acasa: every internal link leads to a real page",
+        "project": "desktop"
+      },
+      {
+        "title": "links.spec.ts › meniu: every internal link leads to a real page",
+        "project": "desktop"
+      },
+      {
+        "title": "links.spec.ts › rezervare: every internal link leads to a real page",
+        "project": "desktop"
+      },
+      {
+        "title": "no-sideways-scroll.spec.ts › rezervare: the page does not scroll sideways",
+        "project": "iphone-15"
+      },
+      {
+        "title": "no-sideways-scroll.spec.ts › rezervare: the page does not scroll sideways",
+        "project": "pixel-7"
+      },
+      {
+        "title": "not-found.spec.ts › an unknown address returns 404 and offers the way home",
+        "project": "iphone-15"
+      },
+      {
+        "title": "not-found.spec.ts › an unknown address returns 404 and offers the way home",
+        "project": "pixel-7"
+      },
+      {
+        "title": "not-found.spec.ts › an unknown address returns 404 and offers the way home",
+        "project": "desktop"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-17T09:30:00Z the home page says: Deschis acum, până la 22:00",
+        "project": "iphone-15"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-13T21:30:00Z the home page says: Închis, deschidem mâine la 11:00",
+        "project": "iphone-15"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-17T09:30:00Z the home page says: Deschis acum, până la 22:00",
+        "project": "pixel-7"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-13T21:30:00Z the home page says: Închis, deschidem mâine la 11:00",
+        "project": "pixel-7"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-17T09:30:00Z the home page says: Deschis acum, până la 22:00",
+        "project": "desktop"
+      },
+      {
+        "title": "opening-status.spec.ts › at 2026-11-13T21:30:00Z the home page says: Închis, deschidem mâine la 11:00",
+        "project": "desktop"
+      },
+      {
+        "title": "reservation.spec.ts › every field has a label",
+        "project": "iphone-15"
+      },
+      {
+        "title": "reservation.spec.ts › inputs are at least 16 px so iOS does not zoom in",
+        "project": "iphone-15"
+      },
+      {
+        "title": "reservation.spec.ts › a valid reservation shows the demo message and sends nothing",
+        "project": "iphone-15"
+      },
+      {
+        "title": "reservation.spec.ts › an 11-digit phone number shows the phone error",
+        "project": "iphone-15"
+      },
+      {
+        "title": "reservation.spec.ts › every field has a label",
+        "project": "pixel-7"
+      },
+      {
+        "title": "reservation.spec.ts › inputs are at least 16 px so iOS does not zoom in",
+        "project": "pixel-7"
+      },
+      {
+        "title": "reservation.spec.ts › a valid reservation shows the demo message and sends nothing",
+        "project": "pixel-7"
+      },
+      {
+        "title": "reservation.spec.ts › an 11-digit phone number shows the phone error",
+        "project": "pixel-7"
+      },
+      {
+        "title": "reservation.spec.ts › every field has a label",
+        "project": "desktop"
+      },
+      {
+        "title": "reservation.spec.ts › inputs are at least 16 px so iOS does not zoom in",
+        "project": "desktop"
+      },
+      {
+        "title": "reservation.spec.ts › a valid reservation shows the demo message and sends nothing",
+        "project": "desktop"
+      },
+      {
+        "title": "reservation.spec.ts › an 11-digit phone number shows the phone error",
+        "project": "desktop"
+      },
+      {
+        "title": "keyboard.spec.ts › Tab reaches the call link on the home page, with a visible focus",
+        "project": "desktop"
+      }
+    ]
+  },
+  "security": {
+    "observatory": {
+      "grade": "C",
+      "score": 55
+    },
+    "headersPresent": 2,
+    "exposed": [
+      {
+        "path": "/assets/index-tm_209Uy.js.map",
+        "status": 200
+      }
+    ],
+    "npmAudit": {
+      "critical": 2,
+      "high": 1,
+      "moderate": 3,
+      "low": 0
+    }
+  },
+  "links": {
+    "checked": 3,
+    "broken": []
+  }
+}

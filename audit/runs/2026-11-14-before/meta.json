@@ -1,0 +1,21 @@
+{
+  "runId": "2026-11-14-before",
+  "target": "before",
+  "url": "https://pizza-mita-inainte.pages.dev",
+  "startedAt": "2026-11-14T05:54:31.883Z",
+  "finishedAt": "2026-11-14T05:56:38.243Z",
+  "version": {
+    "commit": "1b68d358ec7b383f6920fdef5862f58b4da3d6f9",
+    "branch": "before",
+    "builtAt": "2026-11-12T07:19:00.551Z"
+  },
+  "tools": {
+    "lighthouse": "13.6.0",
+    "@playwright/test": "1.64.1",
+    "@axe-core/playwright": "4.14.0",
+    "linkinator": "8.1.0",
+    "node-html-parser": "9.0.7"
+  },
+  "node": "v26.10.0",
+  "machine": "Darwin arm64 Apple M2 Pro"
+}
